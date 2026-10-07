@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>First Take — Tu primera colaboración empieza aquí</title>
+<meta name="description" content="First Take conecta a creadores de contenido que están empezando con negocios locales que necesitan contenido real. Cada colaboración queda verificada en tu portafolio.">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --crema: #FAF6EF;
+    --crema-2: #F1EADF;
+    --negro: #1C1A17;
+    --gris: #4A453E;
+    --tenue: #8A7F6E;
+    --linea: #E4DACB;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    color: var(--negro);
+    background-color: var(--crema);
+    line-height: 1.5;
+  }
+
+  a { text-decoration: none; color: inherit; }
+  img { display: block; max-width: 100%; }
+
+  h1, h2, h3, .serif {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-weight: 400;
+  }
+
+  .overline {
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--tenue);
+    margin-bottom: 16px;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 13px 24px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 0.92rem;
+    border: 1px solid var(--negro);
+    transition: transform 0.15s ease, background-color 0.15s ease, color 0.15s ease;
+  }
+  .btn:hover { transform: translateY(-1px); }
+  .btn-solid { background: var(--negro); color: var(--crema); }
+  .btn-solid:hover { background: #000; }
+  .btn-outline { background: transparent; color: var(--negro); }
+  .btn-outline:hover { background: var(--negro); color: var(--crema); }
+
+  /* ---------- NAV ---------- */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 48px;
+    background: rgba(250, 246, 239, 0.94);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--linea);
+  }
+  .logo { font-family: Georgia, serif; font-size: 1.6rem; }
+  .logo sup { font-size: 0.55rem; margin-left: 2px; }
+  .nav-links { display: flex; gap: 34px; list-style: none; font-size: 0.92rem; }
+  .nav-links a:hover { color: var(--tenue); }
+  .nav-cta { padding: 10px 20px; font-size: 0.85rem; }
+  .nav-right { display: flex; align-items: center; gap: 18px; }
+  .nav-login { font-size: 0.92rem; }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 560px;
+  }
+  .hero-text {
+    padding: 64px 56px 64px 48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .hero-text h1 {
+    font-size: 3.4rem;
+    line-height: 1.06;
+    margin-bottom: 24px;
+  }
+  .hero-text h1 em { font-style: italic; }
+  .hero-text p {
+    font-size: 1.05rem;
+    color: var(--gris);
+    max-width: 440px;
+    margin-bottom: 34px;
+  }
+  .hero-buttons { display: flex; gap: 14px; flex-wrap: wrap; }
+
+  .hero-image {
+    position: relative;
+    min-height: 480px;
+    background: #3C332B url('https://images.unsplash.com/photo-1749104953165-5d0ce2cc63e8?auto=format&fit=crop&w=1100&h=1200&q=80') center/cover no-repeat;
+  }
+  .hero-image::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0) 45%, rgba(0,0,0,0.35) 100%);
+  }
+  .float-card {
+    position: absolute;
+    left: 32px;
+    bottom: 32px;
+    z-index: 2;
+    background: var(--crema);
+    border-radius: 18px;
+    padding: 18px 20px;
+    width: 280px;
+    box-shadow: 0 18px 40px rgba(0,0,0,0.18);
+  }
+  .float-card .row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .float-card .tag {
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: var(--negro);
+    color: var(--crema);
+    padding: 4px 10px;
+    border-radius: 999px;
+  }
+  .float-card .check { font-size: 0.78rem; color: #2F6B45; font-weight: 600; }
+  .float-card h4 { font-family: Georgia, serif; font-weight: 400; font-size: 1.1rem; margin-bottom: 4px; }
+  .float-card p { font-size: 0.82rem; color: var(--gris); }
+
+  /* ---------- FRANJA ---------- */
+  .strip {
+    display: flex;
+    justify-content: center;
+    gap: 56px;
+    flex-wrap: wrap;
+    padding: 26px 48px;
+    border-top: 1px solid var(--linea);
+    border-bottom: 1px solid var(--linea);
+    font-family: Georgia, serif;
+    font-size: 1.05rem;
+    color: var(--tenue);
+  }
+
+  /* ---------- SECCIONES ---------- */
+  section.block { padding: 96px 48px; }
+  .section-head { max-width: 640px; margin-bottom: 48px; }
+  .section-head h2 { font-size: 2.5rem; line-height: 1.12; margin-bottom: 14px; }
+  .section-head p { color: var(--gris); font-size: 1.02rem; }
+
+  /* 3 tarjetas */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .card {
+    background: #fff;
+    border: 1px solid var(--linea);
+    border-radius: 20px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .card img { height: 220px; width: 100%; object-fit: cover; background: var(--crema-2); }
+  .card-body { padding: 26px; }
+  .card-num { font-family: Georgia, serif; font-size: 0.95rem; color: var(--tenue); margin-bottom: 10px; }
+  .card h3 { font-size: 1.45rem; margin-bottom: 10px; }
+  .card p { color: var(--gris); font-size: 0.95rem; }
+
+  /* Para negocios (revisión Checkpoint 1) */
+  .negocios {
+    background: var(--negro);
+    color: var(--crema);
+  }
+  .negocios .overline { color: #B7AC99; }
+  .negocios .section-head p { color: #CFC6B6; }
+  .benefits {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: #3A3631;
+    border: 1px solid #3A3631;
+    border-radius: 20px;
+    overflow: hidden;
+  }
+  .benefit { background: var(--negro); padding: 32px 28px; }
+  .benefit .big { font-family: Georgia, serif; font-size: 2.4rem; margin-bottom: 8px; }
+  .benefit h3 { font-size: 1.2rem; margin-bottom: 8px; }
+  .benefit p { color: #CFC6B6; font-size: 0.93rem; }
+  .negocios .btn-solid { background: var(--crema); color: var(--negro); border-color: var(--crema); }
+  .negocios .btn-solid:hover { background: #fff; }
+  .negocios-cta { margin-top: 40px; }
+
+  /* Categorías */
+  .cats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+  }
+  .cat {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    aspect-ratio: 4 / 5;
+    background: var(--crema-2);
+  }
+  .cat img { width: 100%; height: 100%; object-fit: cover; }
+  .cat span {
+    position: absolute;
+    left: 14px;
+    bottom: 14px;
+    background: var(--crema);
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  /* CTA final */
+  .final {
+    text-align: center;
+    padding: 110px 48px;
+    background: var(--crema-2);
+  }
+  .final h2 { font-size: 2.8rem; line-height: 1.1; max-width: 680px; margin: 0 auto 18px; }
+  .final p { color: var(--gris); max-width: 520px; margin: 0 auto 34px; }
+  .final .hero-buttons { justify-content: center; }
+
+  /* ---------- FOOTER ---------- */
+  footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 34px 48px;
+    border-top: 1px solid var(--linea);
+    font-size: 0.88rem;
+    color: var(--tenue);
+  }
+  footer .logo { color: var(--negro); font-size: 1.3rem; }
+  footer ul { display: flex; gap: 24px; list-style: none; }
+  footer a:hover { color: var(--negro); }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width: 900px) {
+    nav { padding: 16px 20px; }
+    .nav-links { display: none; }
+    .nav-login { display: none; }
+    .hero { grid-template-columns: 1fr; }
+    .hero-text { padding: 48px 20px; }
+    .hero-text h1 { font-size: 2.5rem; }
+    .hero-image { min-height: 420px; }
+    .float-card { left: 16px; right: 16px; width: auto; bottom: 16px; }
+    .strip { gap: 24px; padding: 20px; font-size: 0.95rem; }
+    section.block { padding: 64px 20px; }
+    .section-head h2 { font-size: 2rem; }
+    .cards, .benefits { grid-template-columns: 1fr; }
+    .cats { grid-template-columns: repeat(2, 1fr); }
+    .final { padding: 72px 20px; }
+    .final h2 { font-size: 2.1rem; }
+    footer { padding: 28px 20px; flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="logo">First Take<sup>®</sup></a>
+    <ul class="nav-links">
+      <li><a href="#como-funciona">Cómo funciona</a></li>
+      <li><a href="#negocios">Para negocios</a></li>
+      <li><a href="#categorias">Categorías</a></li>
+    </ul>
+    <div class="nav-right">
+      <a href="app.html#/login" class="nav-login">Iniciar sesión</a>
+      <a href="app.html#/entrar" class="btn btn-solid nav-cta">Crear cuenta</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-text">
+      <p class="overline">Creadores que empiezan · Negocios locales</p>
+      <h1>Tu primera colaboración <em>empieza aquí.</em></h1>
+      <p>Para aparecer en marcas necesitas portafolio, y para tener portafolio necesitas marcas. First Take rompe ese círculo: te conecta con negocios de tu colonia que te dan un producto, servicio o experiencia a cambio de contenido real.</p>
+      <div class="hero-buttons">
+        <a href="app.html#/registro/creador" class="btn btn-solid">Soy creador →</a>
+        <a href="app.html#/registro/negocio" class="btn btn-outline">Tengo un negocio</a>
+      </div>
+      <p style="margin:18px 0 0;font-size:.9rem">¿Ya tienes cuenta? <a href="app.html#/login" style="text-decoration:underline">Inicia sesión</a></p>
+    </div>
+    <div class="hero-image" role="img" aria-label="Persona fotografiando su café para redes">
+      <div class="float-card">
+        <div class="row">
+          <span class="tag">Colaboración #3</span>
+          <span class="check">✓ Verificada</span>
+        </div>
+        <h4>Café de especialidad · Metepec</h4>
+        <p>1 reel + 3 historias a cambio de brunch para dos. Aprobado por el negocio.</p>
+      </div>
+    </div>
+  </header>
+
+  <!-- FRANJA -->
+  <div class="strip">
+    <span>Cafeterías</span>
+    <span>Estudios de uñas</span>
+    <span>Restaurantes</span>
+    <span>Boutiques</span>
+    <span>Estudios de pilates</span>
+    <span>Bares</span>
+  </div>
+
+  <!-- 3 TARJETAS: CÓMO FUNCIONA -->
+  <section class="block" id="como-funciona">
+    <div class="section-head">
+      <p class="overline">Cómo funciona</p>
+      <h2>Tres pasos, cero DMs perdidos.</h2>
+      <p>Todo queda acordado antes de grabar: qué entregas, qué recibes y para cuándo.</p>
+    </div>
+    <div class="cards">
+      <article class="card">
+        <img src="https://images.unsplash.com/photo-1718874380569-7a44071f01c3?auto=format&fit=crop&w=700&h=500&q=80" alt="Creadora grabando con su celular frente a una luz" loading="lazy">
+        <div class="card-body">
+          <p class="card-num">01</p>
+          <h3>Arma tu perfil</h3>
+          <p>No importa cuántos seguidores tengas. Cuenta tu estilo, tu nicho y la zona donde te mueves.</p>
+        </div>
+      </article>
+      <article class="card">
+        <img src="https://images.unsplash.com/photo-1753351052363-53ce102830eb?auto=format&fit=crop&w=700&h=500&q=80" alt="Dueña sonriendo en su cafetería" loading="lazy">
+        <div class="card-body">
+          <p class="card-num">02</p>
+          <h3>Aplica a colaboraciones cerca de ti</h3>
+          <p>Negocios de tu colonia publican lo que ofrecen y lo que necesitan. Tú aplicas y ellos te aprueban.</p>
+        </div>
+      </article>
+      <article class="card">
+        <img src="https://images.unsplash.com/photo-1603145733146-ae562a55031e?auto=format&fit=crop&w=700&h=500&q=80" alt="Celular con apps de redes sociales junto a un café" loading="lazy">
+        <div class="card-body">
+          <p class="card-num">03</p>
+          <h3>Suma a tu portafolio verificado</h3>
+          <p>Cada colaboración completada queda confirmada por el negocio y sube tu nivel. Tu historial habla por ti.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- PARA NEGOCIOS -->
+  <section class="block negocios" id="negocios">
+    <div class="section-head">
+      <p class="overline">Para negocios</p>
+      <h2>Contenido real sin perder horas ni arriesgarte.</h2>
+      <p>Buscar creadores por Instagram, negociar por DM y cruzar los dedos para que publiquen toma tiempo. First Take lo resuelve por ti.</p>
+    </div>
+    <div class="benefits">
+      <div class="benefit">
+        <p class="big">−5 h</p>
+        <h3>Ahorra tiempo</h3>
+        <p>Publicas una vez lo que ofreces y recibes creadores de tu zona listos para colaborar.</p>
+      </div>
+      <div class="benefit">
+        <p class="big">✓</p>
+        <h3>Tú apruebas</h3>
+        <p>Ves el historial verificado de cada creador y decides a quién aceptar. Nadie entra sin tu visto bueno.</p>
+      </div>
+      <div class="benefit">
+        <p class="big">1:1</p>
+        <h3>Acuerdo claro</h3>
+        <p>Entregables, fechas y lo que das quedan por escrito antes de empezar. Sin sorpresas.</p>
+      </div>
+    </div>
+    <div class="negocios-cta">
+      <a href="app.html#/registro/negocio" class="btn btn-solid">Publicar mi primera colaboración →</a>
+    </div>
+  </section>
+
+  <!-- CATEGORÍAS -->
+  <section class="block" id="categorias">
+    <div class="section-head">
+      <p class="overline">Categorías</p>
+      <h2>Lo que puedes encontrar en tu colonia.</h2>
+    </div>
+    <div class="cats">
+      <div class="cat"><img src="https://images.unsplash.com/photo-1712836955124-d8ec0f2b96d1?auto=format&fit=crop&w=500&h=625&q=80" alt="Cafés" loading="lazy"><span>Cafés</span></div>
+      <div class="cat"><img src="https://images.unsplash.com/photo-1702119614572-b9f0b45b10a2?auto=format&fit=crop&w=500&h=625&q=80" alt="Restaurantes" loading="lazy"><span>Restaurantes</span></div>
+      <div class="cat"><img src="https://images.unsplash.com/photo-1746607242420-12fc2604775d?auto=format&fit=crop&w=500&h=625&q=80" alt="Belleza" loading="lazy"><span>Belleza</span></div>
+      <div class="cat"><img src="https://images.unsplash.com/photo-1603400521630-9f2de124b33b?auto=format&fit=crop&w=500&h=625&q=80" alt="Moda" loading="lazy"><span>Moda</span></div>
+      <div class="cat"><img src="https://images.unsplash.com/photo-1754257320386-2aa79623257c?auto=format&fit=crop&w=500&h=625&q=80" alt="Fitness" loading="lazy"><span>Fitness</span></div>
+      <div class="cat"><img src="https://images.unsplash.com/photo-1643684391140-c5056cfd3436?auto=format&fit=crop&w=500&h=625&q=80" alt="Bienestar" loading="lazy"><span>Bienestar</span></div>
+      <div class="cat"><img src="https://images.unsplash.com/photo-1745052815735-81f18698112b?auto=format&fit=crop&w=500&h=625&q=80" alt="Bares" loading="lazy"><span>Bares</span></div>
+      <div class="cat"><img src="https://images.unsplash.com/photo-1760895307365-98c87b69f9e8?auto=format&fit=crop&w=500&h=625&q=80" alt="Hogar" loading="lazy"><span>Hogar</span></div>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section class="final" id="unete">
+    <p class="overline">Lanzamiento en Metepec</p>
+    <h2>Empezamos colonia por colonia.</h2>
+    <p>Estamos armando el primer grupo de creadores y negocios en Metepec. Crea tu cuenta y empieza con tu primera colaboración.</p>
+    <div class="hero-buttons">
+      <a href="app.html#/registro/creador" class="btn btn-solid">Unirme como creador</a>
+      <a href="app.html#/registro/negocio" class="btn btn-outline">Unirme como negocio</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <a href="#" class="logo">First Take<sup>®</sup></a>
+    <ul>
+      <li><a href="#como-funciona">Cómo funciona</a></li>
+      <li><a href="#negocios">Para negocios</a></li>
+      <li><a href="#unete">Contacto</a></li>
+    </ul>
+    <span>© 2026 First Take · Hecho en Metepec · Fotos: Unsplash</span>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,1409 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>First Take</title>
+<meta name="description" content="Entra a First Take como creador o como negocio.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Instrument+Serif&display=swap" rel="stylesheet">
+<style>
+/* =========================================================
+   FIRST TAKE · estilos de la app
+   Creadores: tema claro (papel). Negocios: tema oscuro (estudio).
+   ========================================================= */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --paper: #FAF6EF;
+  --paper-2: #F1EADF;
+  --ink: #1C1A17;
+  --rec: #C8372D;
+  --ok: #2F6B45;
+
+  --bg: var(--paper);
+  --surface: #FFFFFF;
+  --surface-2: var(--paper-2);
+  --text: var(--ink);
+  --muted: #7A7062;
+  --border: #E4DACB;
+
+  --display: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  --ui: 'Figtree', 'Helvetica Neue', Arial, sans-serif;
+  --r-sm: 10px;
+  --r-md: 16px;
+  --r-lg: 22px;
+}
+
+body[data-theme="biz"] {
+  --bg: #171512;
+  --surface: #211E1A;
+  --surface-2: #2B2722;
+  --text: #F3EEE5;
+  --muted: #A69C8B;
+  --border: #37322C;
+}
+
+html { scroll-behavior: smooth; }
+body { font-family: var(--ui); background: var(--bg); color: var(--text); line-height: 1.5; -webkit-font-smoothing: antialiased; }
+a { color: inherit; text-decoration: none; }
+button, input, select, textarea { font: inherit; color: inherit; }
+img { display: block; max-width: 100%; }
+h1, h2, h3, .display { font-family: var(--display); font-weight: 400; letter-spacing: -0.005em; }
+:focus-visible { outline: 2px solid var(--rec); outline-offset: 2px; border-radius: 4px; }
+
+/* ---------- botones ---------- */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 11px 20px; border-radius: 999px; border: 1px solid var(--text); background: transparent; font-weight: 600; font-size: .9rem; cursor: pointer; white-space: nowrap; }
+.btn:hover { background: var(--surface-2); }
+.btn-primary { background: var(--text); color: var(--bg); }
+.btn-primary:hover { background: var(--text); opacity: .88; }
+.btn-ok { background: var(--ok); border-color: var(--ok); color: #fff; }
+.btn-ok:hover { background: var(--ok); opacity: .9; }
+.btn-ghost { border-color: var(--border); }
+.btn-danger { border-color: rgba(200,55,45,.4); color: var(--rec); }
+.btn-sm { padding: 7px 14px; font-size: .82rem; }
+.btn-block { width: 100%; }
+.btn:disabled { opacity: .4; cursor: not-allowed; }
+.link { text-decoration: underline; text-underline-offset: 3px; cursor: pointer; background: none; border: 0; }
+
+/* ---------- formularios ---------- */
+.field { display: block; }
+.field + .field { margin-top: 16px; }
+.field > span { display: block; font-size: .85rem; font-weight: 600; margin-bottom: 6px; }
+.in { width: 100%; padding: 12px 14px; border-radius: var(--r-sm); border: 1px solid var(--border); background: var(--surface); font-size: .95rem; }
+.in:focus { outline: 2px solid var(--text); outline-offset: 0; }
+textarea.in { min-height: 100px; resize: vertical; }
+.hint { font-size: .8rem; color: var(--muted); margin-top: 6px; }
+.err { font-size: .85rem; color: var(--rec); margin-top: 10px; }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.row3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.picks { display: flex; flex-wrap: wrap; gap: 8px; }
+.pick { border: 1px solid var(--border); background: var(--surface); padding: 8px 14px; border-radius: 999px; font-size: .86rem; cursor: pointer; }
+.pick.on { background: var(--text); color: var(--bg); border-color: var(--text); }
+
+/* =========================================================
+   ACCESO
+   ========================================================= */
+.auth { min-height: 100vh; display: grid; grid-template-columns: 1.05fr 1fr; background: var(--paper); color: var(--ink); }
+.auth-photo { position: relative; background: #3C332B center/cover no-repeat; min-height: 100vh; }
+.auth-photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.05) 30%, rgba(0,0,0,.6)); }
+.auth-photo blockquote { position: absolute; left: 40px; right: 40px; bottom: 44px; z-index: 2; color: #FAF6EF; font-family: var(--display); font-size: 2rem; line-height: 1.15; max-width: 520px; }
+.auth-photo blockquote small { display: block; font-family: var(--ui); font-size: .9rem; margin-top: 12px; opacity: .85; }
+.auth-side { display: flex; flex-direction: column; padding: 32px 56px; }
+.auth-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: auto; }
+.auth-top .logo { font-family: var(--display); font-size: 1.6rem; }
+.auth-top a:not(.logo) { font-size: .9rem; color: var(--muted); }
+.auth-form { width: 100%; max-width: 420px; margin: 40px 0 auto; }
+.auth-form h1 { font-size: 2.6rem; line-height: 1.05; margin-bottom: 10px; }
+.auth-form > p.lead { color: #5A5247; margin-bottom: 28px; }
+.steps { display: flex; gap: 6px; margin-bottom: 26px; }
+.steps i { flex: 1; height: 4px; border-radius: 4px; background: #E4DACB; }
+.steps i.on { background: var(--ink); }
+.step-lbl { font-size: .82rem; color: var(--muted); margin-bottom: 8px; }
+.auth-foot { font-size: .88rem; color: var(--muted); margin-top: 22px; }
+.demo-box { margin-top: 28px; padding-top: 22px; border-top: 1px solid #E4DACB; }
+.demo-box p { font-size: .85rem; color: var(--muted); margin-bottom: 10px; }
+.demo-box .btn { margin: 0 8px 8px 0; }
+
+/* elección de rol */
+.choose { min-height: 100vh; display: flex; flex-direction: column; background: var(--ink); }
+.choose-top { display: flex; justify-content: space-between; align-items: center; padding: 22px 32px; color: var(--paper); }
+.choose-top .logo { font-family: var(--display); font-size: 1.6rem; }
+.choose-top a:not(.logo) { font-size: .9rem; opacity: .75; }
+.choose-grid { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+.door { position: relative; display: flex; flex-direction: column; justify-content: flex-end; padding: 44px; min-height: 520px; background: #3C332B center/cover no-repeat; color: #FAF6EF; overflow: hidden; }
+.door::before { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.1), rgba(0,0,0,.72)); transition: background .25s ease; }
+.door:hover::before { background: linear-gradient(180deg, rgba(0,0,0,.2), rgba(0,0,0,.82)); }
+.door > * { position: relative; z-index: 1; }
+.door h2 { font-size: 3.2rem; line-height: 1; margin-bottom: 12px; }
+.door p { max-width: 380px; opacity: .9; margin-bottom: 24px; }
+.door .btn { background: #FAF6EF; color: var(--ink); border-color: #FAF6EF; align-self: flex-start; }
+.door .sub { margin-top: 14px; font-size: .88rem; opacity: .85; }
+.door .sub a { text-decoration: underline; text-underline-offset: 3px; }
+
+/* =========================================================
+   CASCARÓN DE LA APP
+   ========================================================= */
+.shell { display: grid; grid-template-columns: 236px 1fr; min-height: 100vh; }
+.side { position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; gap: 26px; padding: 24px 16px; border-right: 1px solid var(--border); background: var(--bg); }
+.side-logo { font-family: var(--display); font-size: 1.55rem; padding: 0 10px; }
+.side-role { display: inline-block; margin: 4px 10px 0; font-size: .75rem; color: var(--muted); }
+.side nav { display: flex; flex-direction: column; gap: 2px; }
+.side nav a { display: flex; align-items: center; gap: 11px; padding: 10px 12px; border-radius: var(--r-sm); color: var(--muted); font-size: .94rem; }
+.side nav a:hover { color: var(--text); }
+.side nav a.on { background: var(--surface-2); color: var(--text); font-weight: 600; }
+.side nav svg { width: 19px; height: 19px; flex-shrink: 0; }
+.side nav .count { margin-left: auto; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 999px; background: var(--rec); color: #fff; font-size: .72rem; font-weight: 700; display: grid; place-items: center; }
+.side-user { margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 12px 10px 0; border-top: 1px solid var(--border); }
+.side-user b { display: block; font-size: .88rem; line-height: 1.2; }
+.side-user span { font-size: .78rem; color: var(--muted); }
+.side-user button { margin-left: auto; background: none; border: 0; color: var(--muted); font-size: .8rem; cursor: pointer; text-decoration: underline; }
+.mtop { display: none; }
+
+.main { padding: 38px 48px 90px; max-width: 1200px; width: 100%; }
+.pagehead { display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; flex-wrap: wrap; margin-bottom: 30px; }
+.pagehead h1 { font-size: 2.7rem; line-height: 1.02; }
+.pagehead .lead { color: var(--muted); margin-top: 8px; max-width: 580px; }
+.back { display: inline-flex; font-size: .9rem; color: var(--muted); margin-bottom: 18px; }
+.back:hover { color: var(--text); }
+.sechead { display: flex; justify-content: space-between; align-items: baseline; margin: 40px 0 16px; gap: 12px; }
+.sechead h2 { font-size: 1.75rem; }
+.sechead a { font-size: .9rem; color: var(--muted); text-decoration: underline; text-underline-offset: 3px; }
+.muted { color: var(--muted); }
+.small { font-size: .85rem; }
+.panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 24px; }
+.panel h2 { font-size: 1.5rem; margin-bottom: 14px; }
+.empty { border: 1px dashed var(--border); border-radius: var(--r-md); padding: 34px 22px; text-align: center; color: var(--muted); }
+.empty .btn { margin-top: 14px; }
+
+.avatar { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; font-family: var(--display); font-size: 1.05rem; color: #FAF6EF; flex-shrink: 0; }
+.avatar.lg { width: 84px; height: 84px; font-size: 2rem; }
+.avatar.sm { width: 32px; height: 32px; font-size: .9rem; }
+
+/* estados */
+.pill { display: inline-flex; align-items: center; gap: 6px; font-size: .76rem; font-weight: 600; padding: 4px 10px; border-radius: 999px; white-space: nowrap; }
+.pill-pendiente { color: #A06A12; background: rgba(183,121,31,.13); }
+.pill-aceptada { color: #3A64A8; background: rgba(58,100,168,.13); }
+.pill-entregada { color: #7B4FA3; background: rgba(123,79,163,.14); }
+.pill-verificada { color: #2F7D4F; background: rgba(47,125,79,.14); }
+.pill-rechazada { color: var(--muted); background: var(--surface-2); }
+body[data-theme="biz"] .pill-aceptada { color: #8DB0EA; }
+body[data-theme="biz"] .pill-entregada { color: #C4A0E8; }
+body[data-theme="biz"] .pill-verificada { color: #7FCB9C; }
+body[data-theme="biz"] .pill-pendiente { color: #E8B566; }
+.tag { display: inline-flex; font-size: .78rem; padding: 4px 10px; border-radius: 999px; background: var(--surface-2); color: var(--muted); white-space: nowrap; }
+
+.rec { display: inline-flex; align-items: center; gap: 7px; font-size: .78rem; font-weight: 700; color: var(--rec); letter-spacing: .02em; }
+.rec::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--rec); animation: rec 1.6s ease-in-out infinite; }
+@keyframes rec { 50% { opacity: .25; } }
+@media (prefers-reduced-motion: reduce) { .rec::before { animation: none; } * { scroll-behavior: auto !important; } }
+
+/* ---------- claqueta (nivel) ---------- */
+.slate { background: var(--ink); color: var(--paper); border-radius: var(--r-md); overflow: hidden; border: 1px solid #2A2621; }
+.slate-bar { height: 30px; background: repeating-linear-gradient(-45deg, var(--paper) 0 16px, var(--ink) 16px 32px); border-bottom: 3px solid var(--ink); }
+.slate-body { padding: 18px 22px 20px; }
+.slate-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
+.slate-head b { font-family: var(--display); font-weight: 400; font-size: 1.3rem; }
+.slate-grid { display: grid; grid-template-columns: 1.2fr 1fr 1fr; border-top: 1px solid #3A3631; border-bottom: 1px solid #3A3631; }
+.slate-grid > div { padding: 12px 0 12px 16px; border-left: 1px solid #3A3631; }
+.slate-grid > div:first-child { padding-left: 0; border-left: 0; }
+.slate small { display: block; font-size: .66rem; letter-spacing: .14em; text-transform: uppercase; color: #A69C8B; margin-bottom: 4px; }
+.slate-num { font-family: var(--display); font-size: 3.6rem; line-height: .9; }
+.slate-val { font-family: var(--display); font-size: 1.9rem; line-height: 1.1; }
+.prog { height: 6px; background: #3A3631; border-radius: 6px; overflow: hidden; margin: 16px 0 8px; }
+.prog i { display: block; height: 100%; background: var(--paper); border-radius: 6px; }
+.slate p { font-size: .85rem; color: #CFC6B6; }
+
+/* ---------- inicio creador ---------- */
+.home-grid { display: grid; grid-template-columns: 1fr 1.25fr; gap: 20px; align-items: start; }
+.live { display: flex; gap: 14px; align-items: center; padding: 14px 0; border-top: 1px solid var(--border); }
+.live:first-of-type { border-top: 0; padding-top: 4px; }
+.live-img { width: 64px; height: 64px; border-radius: 12px; overflow: hidden; background: var(--surface-2); flex-shrink: 0; }
+.live-img img { width: 100%; height: 100%; object-fit: cover; }
+.live-txt { flex: 1; min-width: 0; }
+.live-txt b { display: block; font-size: .95rem; }
+.live-txt span { font-size: .84rem; color: var(--muted); }
+
+/* ---------- tarjetas de colaboración ---------- */
+.cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.ocard { display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); overflow: hidden; cursor: pointer; transition: border-color .15s ease; }
+.ocard:hover { border-color: var(--text); }
+.ocard.locked { opacity: .62; }
+.ocard-img { position: relative; aspect-ratio: 4 / 3; background: var(--surface-2); overflow: hidden; }
+.ocard-img img { width: 100%; height: 100%; object-fit: cover; }
+.badge { position: absolute; top: 12px; left: 12px; background: var(--paper); color: var(--ink); font-size: .8rem; font-weight: 700; padding: 5px 11px; border-radius: 999px; }
+.badge.right { left: auto; right: 12px; background: var(--ink); color: var(--paper); font-weight: 600; }
+.ocard-body { padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+.ocard-biz { font-size: .82rem; color: var(--muted); }
+.ocard h3 { font-size: 1.4rem; line-height: 1.12; }
+.deal { font-size: .88rem; }
+.deal b { font-weight: 600; margin-right: 4px; }
+.ocard-foot { margin-top: auto; padding-top: 10px; display: flex; gap: 8px; flex-wrap: wrap; }
+
+.toolbar { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 16px; }
+.toolbar .in { max-width: 320px; }
+.toolbar select.in { max-width: 200px; }
+.chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
+
+/* ---------- detalle de colaboración ---------- */
+.hero-img { position: relative; height: 300px; border-radius: var(--r-lg); overflow: hidden; background: var(--surface-2); margin-bottom: 26px; }
+.hero-img img { width: 100%; height: 100%; object-fit: cover; }
+.hero-img::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 40%, rgba(0,0,0,.55)); }
+.hero-img .hero-txt { position: absolute; left: 28px; right: 28px; bottom: 24px; z-index: 1; color: #FAF6EF; }
+.hero-img h1 { font-size: 2.6rem; line-height: 1.05; }
+.hero-img p { opacity: .9; margin-top: 6px; }
+.detail { display: grid; grid-template-columns: 1.3fr 1fr; gap: 20px; align-items: start; }
+.terms { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--border); border-radius: var(--r-md); overflow: hidden; margin-bottom: 18px; }
+.terms > div { padding: 16px 18px; }
+.terms > div + div { border-left: 1px solid var(--border); }
+.terms small { display: block; font-size: .8rem; color: var(--muted); margin-bottom: 4px; }
+.terms p { font-size: .98rem; }
+.facts { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+
+.bars > div { display: grid; grid-template-columns: 140px 1fr 36px; gap: 12px; align-items: center; font-size: .88rem; margin-bottom: 11px; }
+.bar { height: 7px; border-radius: 7px; background: var(--surface-2); overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--text); border-radius: 7px; }
+.score-big { font-family: var(--display); font-size: 3.4rem; line-height: 1; }
+
+/* ---------- tablero por etapas ---------- */
+.board { display: grid; grid-template-columns: repeat(4, minmax(220px, 1fr)); gap: 16px; overflow-x: auto; padding-bottom: 8px; }
+.col { background: var(--surface-2); border-radius: var(--r-md); padding: 14px; min-height: 240px; }
+.col h3 { font-family: var(--ui); font-size: .92rem; font-weight: 700; display: flex; justify-content: space-between; margin-bottom: 12px; }
+.col h3 span { color: var(--muted); font-weight: 500; }
+.mini { display: block; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 12px; margin-bottom: 10px; }
+.mini:hover { border-color: var(--text); }
+.mini b { display: block; font-size: .9rem; line-height: 1.3; margin: 4px 0; }
+.mini span { font-size: .8rem; color: var(--muted); }
+
+/* ---------- acuerdo + chat ---------- */
+.agreement { border: 1px dashed var(--text); border-radius: var(--r-md); padding: 20px; }
+.agreement h3 { font-size: 1.35rem; margin-bottom: 10px; }
+.agreement ul { list-style: none; }
+.agreement li { font-size: .92rem; padding: 8px 0; border-top: 1px solid var(--border); }
+.agreement li:first-child { border-top: 0; }
+.track { display: flex; gap: 6px; margin: 16px 0 6px; }
+.track i { flex: 1; height: 5px; border-radius: 5px; background: var(--surface-2); }
+.track i.on { background: var(--text); }
+.track-lbl { display: grid; grid-template-columns: repeat(4, 1fr); font-size: .76rem; color: var(--muted); }
+.track-lbl span:nth-child(2), .track-lbl span:nth-child(3) { text-align: center; }
+.track-lbl span:last-child { text-align: right; }
+
+.chat { display: flex; flex-direction: column; height: 520px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); overflow: hidden; }
+.chat-head { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; gap: 10px; align-items: center; }
+.chat-head b { font-size: .95rem; }
+.chat-log { flex: 1; overflow-y: auto; padding: 18px; display: flex; flex-direction: column; gap: 10px; }
+.msg { max-width: 78%; padding: 10px 14px; border-radius: 16px; font-size: .92rem; background: var(--surface-2); align-self: flex-start; border-bottom-left-radius: 4px; }
+.msg.me { align-self: flex-end; background: var(--text); color: var(--bg); border-bottom-left-radius: 16px; border-bottom-right-radius: 4px; }
+.msg time { display: block; font-size: .7rem; opacity: .6; margin-top: 3px; }
+.chat-form { display: flex; gap: 8px; padding: 12px; border-top: 1px solid var(--border); }
+.chat-form .in { border-radius: 999px; }
+.chat-closed { padding: 26px; text-align: center; color: var(--muted); font-size: .9rem; margin: auto; max-width: 280px; }
+
+.stars { color: #C9971C; letter-spacing: 2px; }
+.star-pick { display: flex; gap: 2px; }
+.star-pick button { background: none; border: 0; font-size: 1.8rem; color: var(--border); cursor: pointer; line-height: 1; }
+.star-pick button.on { color: #C9971C; }
+
+/* ---------- portafolio ---------- */
+.profile { display: grid; grid-template-columns: 1.4fr 1fr; gap: 20px; align-items: start; margin-bottom: 8px; }
+.who { display: flex; gap: 20px; align-items: center; margin-bottom: 16px; }
+.who h1 { font-size: 2.4rem; line-height: 1.05; }
+.stats { display: flex; gap: 32px; margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--border); }
+.stats b { display: block; font-family: var(--display); font-weight: 400; font-size: 2rem; line-height: 1; }
+.stats span { font-size: .82rem; color: var(--muted); }
+.work { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); overflow: hidden; }
+.work-img { aspect-ratio: 16 / 10; background: var(--surface-2); overflow: hidden; }
+.work-img img { width: 100%; height: 100%; object-fit: cover; }
+.work-body { padding: 16px 18px; }
+.work-body h3 { font-size: 1.25rem; margin: 6px 0 2px; }
+.work-body q { display: block; font-size: .88rem; margin-top: 8px; }
+
+/* ---------- negocio ---------- */
+.kpis { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--border); border-radius: var(--r-lg); overflow: hidden; margin-bottom: 26px; background: var(--surface); }
+.kpis > a, .kpis > div { padding: 20px 22px; }
+.kpis > * + * { border-left: 1px solid var(--border); }
+.kpis b { display: block; font-family: var(--display); font-weight: 400; font-size: 2.6rem; line-height: 1; }
+.kpis span { font-size: .85rem; color: var(--muted); }
+.biz-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 20px; align-items: start; }
+.todo { display: flex; align-items: center; gap: 14px; padding: 14px 0; border-top: 1px solid var(--border); }
+.todo:first-of-type { border-top: 0; padding-top: 4px; }
+.todo-txt { flex: 1; }
+.todo-txt b { display: block; font-size: .95rem; }
+.todo-txt span { font-size: .84rem; color: var(--muted); }
+.gallery { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+
+.table { width: 100%; border-collapse: collapse; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); overflow: hidden; }
+.table th { text-align: left; font-size: .8rem; font-weight: 600; color: var(--muted); padding: 14px 18px; border-bottom: 1px solid var(--border); }
+.table td { padding: 16px 18px; border-bottom: 1px solid var(--border); font-size: .92rem; vertical-align: middle; }
+.table tr:last-child td { border-bottom: 0; }
+.table tr[data-go] { cursor: pointer; }
+.table tr[data-go]:hover td { background: var(--surface-2); }
+.t-title { display: flex; align-items: center; gap: 12px; }
+.t-title img, .t-thumb { width: 52px; height: 52px; border-radius: 10px; object-fit: cover; background: var(--surface-2); flex-shrink: 0; }
+.t-title b { display: block; font-weight: 600; }
+
+.applicant { background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+.applicant.top { border-color: var(--text); }
+.applicant-head { display: flex; gap: 12px; align-items: center; }
+.applicant-head .score { margin-left: auto; text-align: right; }
+.applicant-head .score b { font-family: var(--display); font-weight: 400; font-size: 2.2rem; line-height: 1; display: block; }
+.applicant-head .score span { font-size: .75rem; color: var(--muted); }
+.applicant q { font-size: .92rem; }
+.applicant .bars > div { grid-template-columns: 96px 1fr 30px; font-size: .8rem; margin-bottom: 7px; }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+
+.newgrid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 28px; align-items: start; }
+.preview-wrap { position: sticky; top: 24px; }
+.preview-wrap > p { font-size: .85rem; color: var(--muted); margin-bottom: 10px; }
+body[data-theme="biz"] .preview-wrap .ocard { --surface: #FFFFFF; --surface-2: #F1EADF; --text: #1C1A17; --muted: #7A7062; --border: #E4DACB; color: #1C1A17; }
+
+/* ---------- aviso ---------- */
+.note { background: var(--surface-2); border-radius: var(--r-md); padding: 14px 16px; font-size: .9rem; }
+.note + * { margin-top: 16px; }
+
+.toast { position: fixed; left: 50%; bottom: 26px; transform: translate(-50%, 16px); background: var(--text); color: var(--bg); padding: 12px 20px; border-radius: 999px; font-size: .9rem; opacity: 0; pointer-events: none; transition: opacity .2s ease, transform .2s ease; z-index: 80; max-width: calc(100% - 32px); text-align: center; }
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+.auth ~ .toast, .choose ~ .toast { background: var(--ink); color: var(--paper); }
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+@media (max-width: 1080px) {
+  .cards { grid-template-columns: repeat(2, 1fr); }
+  .main { padding: 32px 28px 90px; }
+}
+@media (max-width: 860px) {
+  .auth { grid-template-columns: 1fr; }
+  .auth-photo { min-height: 220px; }
+  .auth-photo blockquote { font-size: 1.4rem; left: 20px; right: 20px; bottom: 20px; }
+  .auth-side { padding: 22px 20px 40px; }
+  .auth-form { margin-top: 24px; }
+  .auth-form h1 { font-size: 2.1rem; }
+  .choose-top { padding: 18px 20px; }
+  .choose-grid { grid-template-columns: 1fr; }
+  .door { min-height: 360px; padding: 28px 22px; }
+  .door h2 { font-size: 2.4rem; }
+
+  .shell { grid-template-columns: 1fr; }
+  .side { position: fixed; top: auto; bottom: 0; left: 0; right: 0; height: auto; z-index: 40; flex-direction: row; padding: 6px 6px calc(6px + env(safe-area-inset-bottom)); border-right: 0; border-top: 1px solid var(--border); gap: 0; }
+  .side-logo, .side-role, .side-user { display: none; }
+  .side nav { flex-direction: row; width: 100%; justify-content: space-around; }
+  .side nav a { flex-direction: column; gap: 3px; padding: 6px 4px; font-size: .68rem; position: relative; flex: 1; }
+  .side nav a.on { background: none; }
+  .side nav .count { position: absolute; top: 0; right: 18%; margin: 0; min-width: 16px; height: 16px; font-size: .62rem; }
+  .mtop { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 30; background: var(--bg); }
+  .mtop .side-logo { padding: 0; font-size: 1.35rem; }
+  .mtop span { font-size: .78rem; color: var(--muted); }
+  .main { padding: 22px 16px 110px; }
+  .pagehead h1 { font-size: 2.1rem; }
+  .home-grid, .detail, .profile, .biz-grid, .newgrid, .grid2 { grid-template-columns: 1fr; }
+  .cards { grid-template-columns: 1fr; }
+  .kpis { grid-template-columns: 1fr 1fr; }
+  .kpis > *:nth-child(3) { border-left: 0; }
+  .kpis > *:nth-child(n+3) { border-top: 1px solid var(--border); }
+  .board { grid-template-columns: repeat(4, 78vw); scroll-snap-type: x mandatory; }
+  .col { scroll-snap-align: start; }
+  .hero-img { height: 220px; }
+  .hero-img h1 { font-size: 1.9rem; }
+  .terms { grid-template-columns: 1fr; }
+  .terms > div + div { border-left: 0; border-top: 1px solid var(--border); }
+  .row2, .row3 { grid-template-columns: 1fr; }
+  .table thead { display: none; }
+  .table td { display: block; border-bottom: 0; padding: 6px 16px; }
+  .table tr { display: block; border-bottom: 1px solid var(--border); padding: 10px 0; }
+  .gallery { grid-template-columns: 1fr; }
+  .preview-wrap { position: static; }
+  .chat { height: 440px; }
+  .toolbar .in, .toolbar select.in { max-width: none; }
+}
+.stack > * + * { margin-top: 20px; }
+.shell > div, .main { min-width: 0; }
+.board { max-width: 100%; }
+@media (max-width: 860px) { .mtop .side-logo { display: inline; } }
+</style>
+</head>
+<body data-theme="creator">
+<div id="app"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+/* =========================================================
+   FIRST TAKE · prototipo funcional
+   Acceso + interfaz de creadores + interfaz de negocios.
+   Los datos viven en el navegador (localStorage). Todo el
+   acceso a datos pasa por las funciones de la sección DATOS,
+   para poder cambiarlas por una base de datos real después.
+   ========================================================= */
+
+/* ---------------- CATÁLOGOS ---------------- */
+const COLONIAS = {
+  'Metepec Centro':           [19.2536, -99.6048],
+  'La Asunción':              [19.2575, -99.5995],
+  'Providencia':              [19.2640, -99.5975],
+  'Casa Blanca':              [19.2490, -99.5880],
+  'San Salvador Tizatlalli':  [19.2745, -99.5920],
+  'San Jerónimo Chicahualco': [19.2785, -99.6010],
+  'Toluca Centro':            [19.2925, -99.6569]
+};
+const CAT = {
+  'Cafés':        'photo-1712836955124-d8ec0f2b96d1',
+  'Restaurantes': 'photo-1702119614572-b9f0b45b10a2',
+  'Belleza':      'photo-1746607242420-12fc2604775d',
+  'Moda':         'photo-1603400521630-9f2de124b33b',
+  'Fitness':      'photo-1754257320386-2aa79623257c',
+  'Bienestar':    'photo-1643684391140-c5056cfd3436',
+  'Bares':        'photo-1745052815735-81f18698112b',
+  'Hogar':        'photo-1760895307365-98c87b69f9e8'
+};
+const CATEGORIAS = Object.keys(CAT);
+const FORMATOS = ['Reels', 'TikTok', 'Historias', 'Fotos para feed', 'Reseñas'];
+const LEVELS = [
+  { n: 0, name: 'Nuevo',  min: 0 },
+  { n: 1, name: 'Toma 1', min: 1 },
+  { n: 2, name: 'Toma 2', min: 3 },
+  { n: 3, name: 'Toma 3', min: 6 }
+];
+const COLORES = ['#6B5B4D', '#2F6B45', '#8A5A12', '#2B4C7E', '#5B3A78', '#9B2C2C', '#4A453E', '#1C1A17'];
+const PHOTO_CREATOR = 'photo-1718874380569-7a44071f01c3';
+const PHOTO_BIZ = 'photo-1753351052363-53ce102830eb';
+const PHOTO_CREATOR_DOOR = 'photo-1749104953165-5d0ce2cc63e8';
+
+function pic(id, w, h) { return `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&h=${h}&q=75`; }
+function img(id, w, h, alt) { return `<img src="${pic(id, w, h)}" alt="${esc(alt || '')}" loading="lazy" onerror="this.remove()">`; }
+
+/* ---------------- DATOS DE EJEMPLO ---------------- */
+function seed() {
+  return {
+    v: 2,
+    session: null,
+    seq: 200,
+    users: [
+      { id: 'u1', email: 'sofia@demo.mx', pass: hash('demo123'), role: 'creator', profileId: 'c1' },
+      { id: 'u2', email: 'nomada@demo.mx', pass: hash('demo123'), role: 'biz', profileId: 'b1' }
+    ],
+    creators: [
+      { id: 'c1', name: 'Sofía Ramírez', handle: '@sofi.metepec', colonia: 'Metepec Centro', nicho: ['Cafés', 'Restaurantes', 'Moda'], formatos: ['Reels', 'Historias'], followers: 1850, bio: 'Lugares bonitos de Metepec en reels cortos con luz natural.' },
+      { id: 'c2', name: 'Andrea Luna', handle: '@andreeluna', colonia: 'Providencia', nicho: ['Belleza', 'Bienestar'], formatos: ['Reels', 'Fotos para feed'], followers: 950, bio: 'Skincare, uñas y rutinas. Armando mi portafolio.' },
+      { id: 'c3', name: 'Diego Morales', handle: '@diegocome', colonia: 'La Asunción', nicho: ['Restaurantes', 'Bares', 'Cafés'], formatos: ['TikTok', 'Reseñas'], followers: 3200, bio: 'Reseñas honestas de comida en Toluca y Metepec.' },
+      { id: 'c4', name: 'Valeria Ortiz', handle: '@valeortiz.fit', colonia: 'Casa Blanca', nicho: ['Fitness', 'Bienestar'], formatos: ['Reels'], followers: 600, bio: 'Pilates, bienestar y hábitos. Primera vez colaborando.' },
+      { id: 'c5', name: 'Mariana Cruz', handle: '@marianacrea', colonia: 'San Salvador Tizatlalli', nicho: ['Cafés', 'Hogar', 'Moda'], formatos: ['Fotos para feed', 'Reels'], followers: 2400, bio: 'Estética cálida: café y espacios con diseño.' }
+    ],
+    businesses: [
+      { id: 'b1', name: 'Café Nómada', category: 'Cafés', colonia: 'Metepec Centro', contact: 'Laura Méndez', about: 'Café de especialidad y brunch en el centro de Metepec.', formatos: ['Reels', 'Historias'] },
+      { id: 'b2', name: 'Taquería El Callejón', category: 'Restaurantes', colonia: 'La Asunción', contact: 'Jorge', about: 'Tacos al pastor y de guisado desde 2012.', formatos: ['TikTok'] },
+      { id: 'b3', name: 'Estudio Lila Nails', category: 'Belleza', colonia: 'Providencia', contact: 'Lila', about: 'Uñas en gel, acrílico y diseño.', formatos: ['Reels'] },
+      { id: 'b4', name: 'Casa Olivo Boutique', category: 'Moda', colonia: 'Metepec Centro', contact: 'Ana', about: 'Ropa de diseñadoras mexicanas.', formatos: ['Fotos para feed'] },
+      { id: 'b5', name: 'Reformer Club', category: 'Fitness', colonia: 'Casa Blanca', contact: 'Paola', about: 'Estudio de pilates reformer.', formatos: ['Reels'] },
+      { id: 'b6', name: 'Bar La Cantera', category: 'Bares', colonia: 'San Salvador Tizatlalli', contact: 'Rubén', about: 'Coctelería de autor y música en vivo.', formatos: ['Historias', 'Reels'] },
+      { id: 'b7', name: 'Barro & Co.', category: 'Hogar', colonia: 'Toluca Centro', contact: 'Inés', about: 'Cerámica hecha a mano y talleres.', formatos: ['Reels'] }
+    ],
+    offers: [
+      { id: 'o1', bizId: 'b1', title: 'Brunch para dos a cambio de un reel', gives: 'Brunch para 2 personas (hasta $600)', asks: '1 reel de 15–30 s + 3 historias etiquetando al café', category: 'Cafés', colonia: 'Metepec Centro', slots: 2, deadline: '2026-10-24', minLevel: 0, status: 'abierta', img: 'photo-1686315715890-9083c5c5c861' },
+      { id: 'o8', bizId: 'b1', title: 'Lanzamiento de la bebida de otoño', gives: 'Bebida de temporada + postre', asks: '1 TikTok de reseña', category: 'Cafés', colonia: 'Metepec Centro', slots: 3, deadline: '2026-10-31', minLevel: 0, status: 'abierta', img: 'photo-1712836955124-d8ec0f2b96d1' },
+      { id: 'o2', bizId: 'b2', title: 'Noche de tacos + reseña', gives: 'Tacos y bebidas para 2', asks: '1 TikTok mostrando la experiencia', category: 'Restaurantes', colonia: 'La Asunción', slots: 3, deadline: '2026-10-18', minLevel: 0, status: 'abierta', img: 'photo-1702119614572-b9f0b45b10a2' },
+      { id: 'o3', bizId: 'b3', title: 'Manicure gel a cambio de contenido', gives: 'Manicure gel con diseño', asks: 'Reel antes/después + 2 historias', category: 'Belleza', colonia: 'Providencia', slots: 2, deadline: '2026-10-22', minLevel: 1, status: 'abierta', img: 'photo-1746607242420-12fc2604775d' },
+      { id: 'o4', bizId: 'b4', title: 'Outfit de temporada', gives: 'Una prenda de hasta $900', asks: '3 fotos para feed + 1 reel de outfits', category: 'Moda', colonia: 'Metepec Centro', slots: 1, deadline: '2026-10-28', minLevel: 1, status: 'abierta', img: 'photo-1753161029353-f6bb0ff2ad3c' },
+      { id: 'o5', bizId: 'b5', title: 'Tu primera clase de reformer', gives: '2 clases de reformer', asks: '1 reel de tu primera clase', category: 'Fitness', colonia: 'Casa Blanca', slots: 4, deadline: '2026-10-25', minLevel: 0, status: 'abierta', img: 'photo-1754257320386-2aa79623257c' },
+      { id: 'o6', bizId: 'b6', title: 'Coctelería de autor', gives: 'Coctel de autor + entrada para 2', asks: 'Historias en vivo + 1 reel', category: 'Bares', colonia: 'San Salvador Tizatlalli', slots: 2, deadline: '2026-11-01', minLevel: 2, status: 'abierta', img: 'photo-1745052815735-81f18698112b' },
+      { id: 'o7', bizId: 'b7', title: 'Taller de cerámica', gives: 'Lugar en el taller de cerámica', asks: '1 reel del proceso', category: 'Hogar', colonia: 'Toluca Centro', slots: 2, deadline: '2026-11-05', minLevel: 0, status: 'abierta', img: 'photo-1766970421184-e3bc69e07dfc' },
+      { id: 'o9', bizId: 'b2', title: 'Menú degustación', gives: 'Menú de 5 tiempos', asks: '1 reel', category: 'Restaurantes', colonia: 'La Asunción', slots: 2, deadline: '2026-09-10', minLevel: 0, status: 'cerrada', img: 'photo-1558221671-b0339e4ec0ff' },
+      { id: 'o10', bizId: 'b6', title: 'Noche de karaoke', gives: 'Entrada + bebidas', asks: 'Historias en vivo', category: 'Bares', colonia: 'San Salvador Tizatlalli', slots: 3, deadline: '2026-09-05', minLevel: 0, status: 'cerrada', img: 'photo-1745052827456-1f2ac061f2ff' },
+      { id: 'o11', bizId: 'b1', title: 'Latte art en vivo', gives: '2 bebidas de especialidad', asks: '1 reel del barista', category: 'Cafés', colonia: 'Metepec Centro', slots: 2, deadline: '2026-09-15', minLevel: 0, status: 'cerrada', img: 'photo-1731155962457-6e5a499bdbf6' }
+    ],
+    apps: [
+      { id: 'a1', offerId: 'o9', creatorId: 'c1', pitch: 'Me encanta la comida de autor.', status: 'verificada', link: 'instagram.com/reel/menu-degustacion', rating: 5, review: 'Súper puntual y el reel nos trajo clientes nuevos.' },
+      { id: 'a2', offerId: 'o5', creatorId: 'c1', pitch: 'Quiero mostrar cómo se siente la primera clase.', status: 'aceptada' },
+      { id: 'a3', offerId: 'o8', creatorId: 'c1', pitch: 'Hago contenido de cafés en Metepec, me encantaría grabar el lanzamiento.', status: 'pendiente' },
+      { id: 'a4', offerId: 'o1', creatorId: 'c5', pitch: 'Mi estética es cálida y de café, encaja con Nómada.', status: 'pendiente' },
+      { id: 'a5', offerId: 'o1', creatorId: 'c2', pitch: 'Puedo hacer un reel del brunch con enfoque en detalles.', status: 'pendiente' },
+      { id: 'a6', offerId: 'o1', creatorId: 'c3', pitch: 'Hago reseñas de comida, ya visité el café.', status: 'entregada', link: 'tiktok.com/@diegocome/brunch-nomada' },
+      { id: 'a7', offerId: 'o9', creatorId: 'c3', status: 'verificada', link: 'tiktok.com/@diegocome/degustacion', rating: 5, review: 'Excelente narrativa.' },
+      { id: 'a8', offerId: 'o10', creatorId: 'c3', status: 'verificada', link: 'instagram.com/stories/diegocome', rating: 4, review: 'Buen contenido, llegó un poco tarde.' },
+      { id: 'a9', offerId: 'o11', creatorId: 'c3', status: 'verificada', link: 'tiktok.com/@diegocome/latte', rating: 5, review: 'Muy profesional.' },
+      { id: 'a10', offerId: 'o11', creatorId: 'c5', status: 'verificada', link: 'instagram.com/p/latte-art', rating: 5, review: 'Las fotos quedaron hermosas.' }
+    ],
+    messages: [
+      { id: 'm1', appId: 'a2', from: 'biz', text: '¡Hola Sofía! Te esperamos el sábado a las 10. Trae ropa cómoda.', at: '2026-09-27T10:12' },
+      { id: 'm2', appId: 'a2', from: 'creator', text: 'Perfecto, ahí estaré. ¿Puedo grabar dentro del salón?', at: '2026-09-27T10:40' },
+      { id: 'm3', appId: 'a2', from: 'biz', text: 'Sí, solo evita grabar a otras alumnas sin su permiso.', at: '2026-09-27T11:02' },
+      { id: 'm4', appId: 'a6', from: 'biz', text: 'Diego, ¡gracias por venir! Cuando lo subas mándanos el link.', at: '2026-09-26T13:20' },
+      { id: 'm5', appId: 'a6', from: 'creator', text: 'Listo, ya está arriba el TikTok. Lo marqué como entregado.', at: '2026-09-28T19:05' },
+      { id: 'm6', appId: 'a10', from: 'biz', text: 'Mariana, las fotos quedaron increíbles. ¡Gracias!', at: '2026-09-16T09:30' }
+    ]
+  };
+}
+
+/* ---------------- ESTADO ---------------- */
+const KEY = 'firsttake-v2';
+let S = load();
+function load() {
+  try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && s.v === 2) return s; } catch (e) {}
+  return seed();
+}
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+function nid(p) { S.seq += 1; return p + S.seq; }
+/* Hash simple solo para no guardar contraseñas en texto plano dentro del demo.
+   En producción esto lo hace el servicio de autenticación. */
+function hash(s) { let h = 5381; for (const c of String(s)) h = ((h << 5) + h + c.charCodeAt(0)) | 0; return 'h' + (h >>> 0).toString(16); }
+
+/* ---------------- DATOS: lecturas ---------------- */
+const byId = (list, id) => list.find(x => x.id === id);
+const creator = id => byId(S.creators, id);
+const biz = id => byId(S.businesses, id);
+const offer = id => byId(S.offers, id);
+const appRec = id => byId(S.apps, id);
+function me() { return S.session ? byId(S.users, S.session) : null; }
+function meC() { const u = me(); return u && u.role === 'creator' ? creator(u.profileId) : null; }
+function meB() { const u = me(); return u && u.role === 'biz' ? biz(u.profileId) : null; }
+const appsOfCreator = cid => S.apps.filter(a => a.creatorId === cid);
+const offersOfBiz = bid => S.offers.filter(o => o.bizId === bid);
+const appsOfBiz = bid => { const ids = offersOfBiz(bid).map(o => o.id); return S.apps.filter(a => ids.includes(a.offerId)); };
+const msgsOf = aid => S.messages.filter(m => m.appId === aid);
+
+/* ---------------- REPUTACIÓN ---------------- */
+function verifiedOf(cid) { return S.apps.filter(a => a.creatorId === cid && a.status === 'verificada'); }
+function levelOf(cid) {
+  const n = verifiedOf(cid).length;
+  let lv = LEVELS[0];
+  for (const L of LEVELS) if (n >= L.min) lv = L;
+  return { ...lv, count: n, next: LEVELS[lv.n + 1] };
+}
+function ratingOf(cid) {
+  const r = verifiedOf(cid).filter(a => a.rating);
+  return r.length ? r.reduce((s, a) => s + a.rating, 0) / r.length : null;
+}
+const usedSlots = oid => S.apps.filter(a => a.offerId === oid && ['aceptada', 'entregada', 'verificada'].includes(a.status)).length;
+const slotsLeft = o => Math.max(0, o.slots - usedSlots(o.id));
+
+/* distancia entre colonias (haversine, km) */
+function km(a, b) {
+  const [la1, lo1] = COLONIAS[a] || COLONIAS['Metepec Centro'];
+  const [la2, lo2] = COLONIAS[b] || COLONIAS['Metepec Centro'];
+  const r = Math.PI / 180, R = 6371;
+  const h = Math.sin((la2 - la1) * r / 2) ** 2 + Math.cos(la1 * r) * Math.cos(la2 * r) * Math.sin((lo2 - lo1) * r / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(h));
+}
+
+/* ---------------- ALGORITMO 1: colaboraciones para un creador ----------------
+   45% nicho + 40% cercanía + 15% cupos. Bloqueada si no tiene el nivel mínimo. */
+function matchOffer(o, cid) {
+  const c = creator(cid), d = km(c.colonia, o.colonia);
+  const nicho = c.nicho.includes(o.category) ? 1 : 0.3;
+  const cerca = Math.max(0, 1 - d / 12);
+  const cupos = slotsLeft(o) > 0 ? 1 : 0;
+  const score = Math.round(100 * (0.45 * nicho + 0.40 * cerca + 0.15 * cupos));
+  return { o, b: biz(o.bizId), d, nicho, cerca, cupos, score, locked: levelOf(cid).n < o.minLevel };
+}
+function recommendedFor(cid) {
+  return S.offers.filter(o => o.status === 'abierta').map(o => matchOffer(o, cid))
+    .sort((x, y) => (x.locked - y.locked) || (y.score - x.score));
+}
+
+/* ---------------- ALGORITMO 2: aplicantes para un negocio ----------------
+   30% nicho + 25% cercanía + 25% calificación + 20% nivel. Sin seguidores. */
+function rankApplicant(a) {
+  const o = offer(a.offerId), c = creator(a.creatorId), d = km(c.colonia, o.colonia);
+  const nicho = c.nicho.includes(o.category) ? 1 : 0.3;
+  const cerca = Math.max(0, 1 - d / 12);
+  const r = ratingOf(c.id);
+  const calif = r == null ? 0.6 : r / 5;
+  const nivel = levelOf(c.id).n / 3;
+  return { a, c, d, nicho, cerca, calif, nivel, r, score: Math.round(100 * (0.30 * nicho + 0.25 * cerca + 0.25 * calif + 0.20 * nivel)) };
+}
+
+/* ---------------- UTILIDADES DE UI ---------------- */
+const $ = s => document.querySelector(s);
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+function first(name) { return String(name).split(' ')[0]; }
+function initials(n) { return String(n).split(' ').filter(Boolean).map(w => w[0]).slice(0, 2).join('').toUpperCase(); }
+function colorFor(id) { let h = 0; for (const ch of id) h = (h * 31 + ch.charCodeAt(0)) % 997; return COLORES[h % COLORES.length]; }
+function avatar(id, name, size) { return `<span class="avatar ${size || ''}" style="background:${colorFor(id)}" aria-hidden="true">${esc(initials(name))}</span>`; }
+function fecha(iso) { return new Date(iso + 'T12:00:00').toLocaleDateString('es-MX', { day: 'numeric', month: 'short' }); }
+function hora(iso) { const d = new Date(iso); return d.toLocaleDateString('es-MX', { day: 'numeric', month: 'short' }) + ', ' + d.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' }); }
+function daysLeft(iso) { const t = new Date(); t.setHours(0, 0, 0, 0); return Math.round((new Date(iso + 'T00:00:00') - t) / 864e5); }
+function leftTxt(iso) { const n = daysLeft(iso); return n < 0 ? 'fecha vencida' : n === 0 ? 'vence hoy' : n === 1 ? 'queda 1 día' : `quedan ${n} días`; }
+function stars(n) { return '★'.repeat(n) + '☆'.repeat(5 - n); }
+const PILL = { pendiente: 'Esperando respuesta', aceptada: 'Aceptada', entregada: 'Entregada', verificada: 'Verificada', rechazada: 'No seleccionada' };
+function pill(s) { return `<span class="pill pill-${s}">${PILL[s]}</span>`; }
+function plural(n, a, b) { return `${n} ${n === 1 ? a : b}`; }
+function toast(msg) { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('show'), 2800); }
+function go(h) { if (location.hash === h) render(); else location.hash = h; }
+
+const ICON = {
+  home: '<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/>',
+  search: '<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>',
+  board: '<rect x="3" y="4" width="5" height="16" rx="1"/><rect x="10" y="4" width="5" height="10" rx="1"/><rect x="17" y="4" width="4" height="13" rx="1"/>',
+  star: '<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',
+  user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/>',
+  grid: '<rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/>',
+  list: '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  store: '<path d="M3 9l1.5-5h15L21 9M3 9h18v11H3zM9 20v-6h6v6"/>'
+};
+function icon(n) { return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[n]}</svg>`; }
+
+/* =========================================================
+   ACCESO
+   ========================================================= */
+let draft = null;   /* registro en curso: { role, step, data } */
+let authErr = '';
+
+function vEntrar() {
+  return `<div class="choose">
+    <div class="choose-top"><a class="logo" href="index.html">First Take</a><a href="#/login">Ya tengo cuenta</a></div>
+    <div class="choose-grid">
+      <section class="door" style="background-image:url('${pic(PHOTO_CREATOR_DOOR, 1100, 1300)}')">
+        <h2>Soy creador</h2>
+        <p>Consigue colaboraciones con negocios de tu colonia y arma un portafolio que los negocios pueden verificar.</p>
+        <a class="btn" href="#/registro/creador">Crear cuenta de creador</a>
+        <p class="sub">¿Ya tienes cuenta? <a href="#/login">Inicia sesión</a></p>
+      </section>
+      <section class="door" style="background-image:url('${pic(PHOTO_BIZ, 1100, 1300)}')">
+        <h2>Tengo un negocio</h2>
+        <p>Publica lo que ofreces, recibe creadores de tu zona ordenados por qué tan bien encajan y aprueba cada colaboración.</p>
+        <a class="btn" href="#/registro/negocio">Crear cuenta de negocio</a>
+        <p class="sub">¿Ya tienes cuenta? <a href="#/login">Inicia sesión</a></p>
+      </section>
+    </div>
+  </div>`;
+}
+
+function authLayout(photo, quote, who, inner) {
+  return `<div class="auth">
+    <div class="auth-photo" style="background-image:url('${pic(photo, 1200, 1500)}')">
+      <blockquote>${quote}<small>${who}</small></blockquote>
+    </div>
+    <div class="auth-side">
+      <div class="auth-top"><a class="logo" href="index.html">First Take</a><a href="#/entrar">Volver</a></div>
+      <div class="auth-form">${inner}</div>
+    </div>
+  </div>`;
+}
+
+function vLogin() {
+  return authLayout(PHOTO_CREATOR_DOOR, 'Cada colaboración cuenta. Y queda verificada.', 'First Take · Metepec', `
+    <h1>Inicia sesión</h1>
+    <p class="lead">Entra a tu cuenta de creador o de negocio.</p>
+    <form id="f-login" novalidate>
+      <label class="field"><span>Correo</span><input class="in" name="email" type="email" autocomplete="email" required></label>
+      <label class="field"><span>Contraseña</span><input class="in" name="pass" type="password" autocomplete="current-password" required></label>
+      ${authErr ? `<p class="err">${esc(authErr)}</p>` : ''}
+      <button class="btn btn-primary btn-block" type="submit" style="margin-top:22px">Entrar</button>
+    </form>
+    <p class="auth-foot">¿No tienes cuenta? <a class="link" href="#/entrar">Crea una</a></p>
+    <div class="demo-box">
+      <p>Para la presentación puedes entrar con las cuentas de ejemplo (contraseña: demo123).</p>
+      <button class="btn btn-sm btn-ghost" data-demo="u1" type="button">Entrar como Sofía · creadora</button>
+      <button class="btn btn-sm btn-ghost" data-demo="u2" type="button">Entrar como Café Nómada · negocio</button>
+    </div>`);
+}
+
+function vRegistro(role) {
+  if (!draft || draft.role !== role) draft = { role, step: 1, data: { nicho: [], formatos: [] } };
+  const d = draft.data, isC = role === 'creator';
+  const bar = `<p class="step-lbl">Paso ${draft.step} de 3</p><div class="steps">${[1, 2, 3].map(i => `<i class="${i <= draft.step ? 'on' : ''}"></i>`).join('')}</div>`;
+  const err = authErr ? `<p class="err">${esc(authErr)}</p>` : '';
+  let inner = '';
+  if (draft.step === 1) {
+    inner = `${bar}
+      <h1>${isC ? 'Crea tu cuenta de creador' : 'Crea la cuenta de tu negocio'}</h1>
+      <p class="lead">${isC ? 'No importa cuántos seguidores tengas. Aquí cuenta lo que entregas.' : 'Tarda dos minutos. Después publicas tu primera colaboración.'}</p>
+      <form id="f-reg1" novalidate>
+        <label class="field"><span>${isC ? 'Tu nombre' : 'Nombre de quien administra la cuenta'}</span><input class="in" name="name" autocomplete="name" value="${esc(d.name || '')}" required></label>
+        <label class="field"><span>Correo</span><input class="in" name="email" type="email" autocomplete="email" value="${esc(d.email || '')}" required></label>
+        <label class="field"><span>Contraseña</span><input class="in" name="pass" type="password" autocomplete="new-password" required><p class="hint">Mínimo 6 caracteres.</p></label>
+        ${err}
+        <button class="btn btn-primary btn-block" type="submit" style="margin-top:22px">Continuar</button>
+      </form>
+      <p class="auth-foot">¿Ya tienes cuenta? <a class="link" href="#/login">Inicia sesión</a></p>`;
+  } else if (draft.step === 2 && isC) {
+    inner = `${bar}
+      <h1>Cuéntanos qué creas</h1>
+      <p class="lead">Con esto te recomendamos colaboraciones cerca de ti y de tu estilo.</p>
+      <form id="f-reg2" novalidate>
+        <label class="field"><span>Tu usuario en Instagram o TikTok</span><input class="in" name="handle" placeholder="@tuusuario" value="${esc(d.handle || '')}" required></label>
+        <div class="field"><span>Tu nicho (elige hasta 3)</span><div class="picks" data-group="nicho">${CATEGORIAS.map(k => `<button type="button" class="pick ${d.nicho.includes(k) ? 'on' : ''}" data-pick="${k}">${k}</button>`).join('')}</div></div>
+        <div class="field"><span>Formatos que haces</span><div class="picks" data-group="formatos">${FORMATOS.map(k => `<button type="button" class="pick ${d.formatos.includes(k) ? 'on' : ''}" data-pick="${k}">${k}</button>`).join('')}</div></div>
+        <div class="row2 field">
+          <label><span class="small" style="font-weight:600;display:block;margin-bottom:6px">Colonia</span><select class="in" name="colonia">${Object.keys(COLONIAS).map(k => `<option ${k === d.colonia ? 'selected' : ''}>${k}</option>`).join('')}</select></label>
+          <label><span class="small" style="font-weight:600;display:block;margin-bottom:6px">Seguidores (aprox.)</span><input class="in" name="followers" type="number" min="0" value="${esc(d.followers || '')}" placeholder="800"></label>
+        </div>
+        <label class="field"><span>Bio corta</span><textarea class="in" name="bio" maxlength="140" placeholder="Qué tipo de contenido haces y cómo se ve.">${esc(d.bio || '')}</textarea></label>
+        ${err}
+        <div style="display:flex;gap:10px;margin-top:22px"><button class="btn btn-ghost" type="button" data-back-step>Atrás</button><button class="btn btn-primary" type="submit" style="flex:1">Crear mi cuenta</button></div>
+      </form>`;
+  } else if (draft.step === 2) {
+    inner = `${bar}
+      <h1>Cuéntanos de tu negocio</h1>
+      <p class="lead">Así te mostramos a creadores de tu zona y tu categoría.</p>
+      <form id="f-reg2" novalidate>
+        <label class="field"><span>Nombre del negocio</span><input class="in" name="bizname" value="${esc(d.bizname || '')}" required></label>
+        <div class="row2 field">
+          <label><span class="small" style="font-weight:600;display:block;margin-bottom:6px">Categoría</span><select class="in" name="category">${CATEGORIAS.map(k => `<option ${k === d.category ? 'selected' : ''}>${k}</option>`).join('')}</select></label>
+          <label><span class="small" style="font-weight:600;display:block;margin-bottom:6px">Colonia</span><select class="in" name="colonia">${Object.keys(COLONIAS).map(k => `<option ${k === d.colonia ? 'selected' : ''}>${k}</option>`).join('')}</select></label>
+        </div>
+        <div class="field"><span>Qué contenido te gustaría recibir</span><div class="picks" data-group="formatos">${FORMATOS.map(k => `<button type="button" class="pick ${d.formatos.includes(k) ? 'on' : ''}" data-pick="${k}">${k}</button>`).join('')}</div></div>
+        <label class="field"><span>Describe tu negocio en una línea</span><input class="in" name="about" maxlength="120" value="${esc(d.about || '')}" placeholder="Ej. Café de especialidad y brunch en el centro."></label>
+        ${err}
+        <div style="display:flex;gap:10px;margin-top:22px"><button class="btn btn-ghost" type="button" data-back-step>Atrás</button><button class="btn btn-primary" type="submit" style="flex:1">Crear cuenta del negocio</button></div>
+      </form>`;
+  } else {
+    inner = `${bar}
+      <h1>${isC ? `Listo, ${esc(first(d.name))}.` : `${esc(d.bizname)} ya está en First Take.`}</h1>
+      <p class="lead">${isC ? 'Empiezas como <b>Nuevo</b>. Tu primera colaboración verificada te sube a <b>Toma 1</b> y desbloquea más negocios.' : 'Publica tu primera colaboración y los creadores de tu zona podrán aplicar.'}</p>
+      <div class="note">${isC ? 'Tip: tu mensaje al aplicar es lo primero que lee el negocio. Sé concreto sobre lo que vas a grabar.' : 'Tip: las colaboraciones abiertas a “Nuevo” reciben más aplicaciones y ayudan a creadores que empiezan.'}</div>
+      <a class="btn btn-primary btn-block" href="${isC ? '#/explorar' : '#/nueva'}">${isC ? 'Ver colaboraciones para mí' : 'Publicar mi primera colaboración'}</a>
+      <p class="auth-foot"><a class="link" href="${isC ? '#/inicio' : '#/resumen'}">Ir a mi ${isC ? 'inicio' : 'resumen'}</a></p>`;
+  }
+  return isC
+    ? authLayout(PHOTO_CREATOR, 'Tu primera colaboración empieza aquí.', 'Para creadores que están empezando', inner)
+    : authLayout(PHOTO_BIZ, 'Contenido real de gente de tu colonia, sin perseguir a nadie por DM.', 'Para negocios locales', inner);
+}
+
+/* =========================================================
+   CASCARÓN
+   ========================================================= */
+function shell(content) {
+  const u = me(), isC = u.role === 'creator';
+  const p = isC ? meC() : meB();
+  const h = location.hash;
+  let links;
+  if (isC) {
+    const n = appsOfCreator(p.id).filter(a => a.status === 'aceptada').length;
+    links = [['#/inicio', 'Inicio', 'home'], ['#/explorar', 'Explorar', 'search', ['#/oferta']], ['#/colabs', 'Colaboraciones', 'board', ['#/colab'], n], ['#/portafolio', 'Portafolio', 'star'], ['#/perfil', 'Perfil', 'user']];
+  } else {
+    const n = appsOfBiz(p.id).filter(a => a.status === 'pendiente' || a.status === 'entregada').length;
+    links = [['#/resumen', 'Resumen', 'grid', [], n], ['#/colaboraciones', 'Colaboraciones', 'list', ['#/gestionar', '#/colab', '#/creador']], ['#/nueva', 'Publicar', 'plus'], ['#/perfil', 'Negocio', 'store']];
+  }
+  const nav = links.map(([href, lbl, ic, also, count]) => {
+    const on = h.startsWith(href) || (also || []).some(x => h.startsWith(x));
+    return `<a href="${href}" class="${on ? 'on' : ''}" ${on ? 'aria-current="page"' : ''}>${icon(ic)}<span>${lbl}</span>${count ? `<em class="count">${count}</em>` : ''}</a>`;
+  }).join('');
+  return `<div class="shell">
+    <aside class="side">
+      <div><a class="side-logo" href="${isC ? '#/inicio' : '#/resumen'}">First Take</a><br><span class="side-role">${isC ? 'Para creadores' : 'Para negocios'}</span></div>
+      <nav aria-label="Principal">${nav}</nav>
+      <div class="side-user">${avatar(p.id, p.name, 'sm')}<div><b>${esc(isC ? first(p.name) : p.name)}</b><span>${esc(u.email)}</span></div><button type="button" data-logout>Salir</button></div>
+    </aside>
+    <div>
+      <div class="mtop"><a class="side-logo" href="${isC ? '#/inicio' : '#/resumen'}">First Take</a><span>${isC ? 'Creadores' : 'Negocios'}</span></div>
+      <main class="main" id="main">${content}</main>
+    </div>
+  </div>`;
+}
+
+/* =========================================================
+   PIEZAS COMPARTIDAS
+   ========================================================= */
+function slate(c) {
+  const lv = levelOf(c.id), r = ratingOf(c.id);
+  const pct = lv.next ? Math.round(100 * (lv.count - lv.min) / (lv.next.min - lv.min)) : 100;
+  return `<div class="slate" aria-label="Nivel ${esc(lv.name)}">
+    <div class="slate-bar"></div>
+    <div class="slate-body">
+      <div class="slate-head"><b>${esc(c.name)}</b><span class="small" style="color:#A69C8B">${esc(c.handle)}</span></div>
+      <div class="slate-grid">
+        <div><small>Toma</small><span class="slate-num">${lv.n}</span></div>
+        <div><small>Verificadas</small><span class="slate-val">${lv.count}</span></div>
+        <div><small>Calificación</small><span class="slate-val">${r ? r.toFixed(1) : '—'}</span></div>
+      </div>
+      <div class="prog"><i style="width:${pct}%"></i></div>
+      <p>${lv.next ? `Nivel ${esc(lv.name)}. ${plural(lv.next.min - lv.count, 'colaboración verificada', 'colaboraciones verificadas')} más para ${lv.next.name}.` : 'Nivel máximo: Toma 3.'}</p>
+    </div>
+  </div>`;
+}
+
+function offerCard(m, opts) {
+  opts = opts || {};
+  const { o, b, d, score, locked } = m;
+  const left = slotsLeft(o);
+  return `<article class="ocard ${locked ? 'locked' : ''}" ${opts.preview ? '' : `data-go="#/oferta/${o.id}"`}>
+    <div class="ocard-img">${img(o.img || CAT[o.category], 640, 480, o.title)}
+      <span class="badge">${opts.preview ? 'Vista previa' : `${score}% match`}</span>
+      ${locked ? `<span class="badge right">Desde ${LEVELS[o.minLevel].name}</span>` : ''}
+    </div>
+    <div class="ocard-body">
+      <span class="ocard-biz">${esc(b.name)} · ${esc(o.colonia)}${opts.preview ? '' : ` · ${d.toFixed(1)} km`}</span>
+      <h3>${esc(o.title || 'Título de tu colaboración')}</h3>
+      <p class="deal"><b>Recibes</b>${esc(o.gives || '—')}</p>
+      <p class="deal"><b>Entregas</b>${esc(o.asks || '—')}</p>
+      <div class="ocard-foot"><span class="tag">${esc(o.category)}</span><span class="tag">${left ? plural(left, 'cupo', 'cupos') : 'Sin cupos'}</span><span class="tag">Hasta ${fecha(o.deadline)}</span></div>
+    </div>
+  </article>`;
+}
+
+function bar(label, v, peso) { return `<div><span>${label}${peso ? ` <span class="muted">${peso}</span>` : ''}</span><span class="bar"><i style="width:${Math.round(v * 100)}%"></i></span><b class="small">${Math.round(v * 100)}</b></div>`; }
+
+function track(st) {
+  const idx = { pendiente: 0, aceptada: 1, entregada: 2, verificada: 3 }[st];
+  if (idx == null) return '';
+  return `<div class="track">${[0, 1, 2, 3].map(i => `<i class="${i <= idx ? 'on' : ''}"></i>`).join('')}</div>
+  <div class="track-lbl"><span>Aplicación</span><span>Acuerdo</span><span>Entrega</span><span>Verificada</span></div>`;
+}
+
+function agreement(a) {
+  const o = offer(a.offerId), b = biz(o.bizId), c = creator(a.creatorId);
+  return `<div class="agreement">
+    <h3>Acuerdo ${esc(a.id.toUpperCase())}</h3>
+    <ul>
+      <li><b>${esc(b.name)}</b> da: ${esc(o.gives)}</li>
+      <li><b>${esc(c.name)}</b> entrega: ${esc(o.asks)}</li>
+      <li>Publicar antes del ${fecha(o.deadline)} (${leftTxt(o.deadline)})</li>
+      <li>Al confirmar la entrega, la colaboración queda verificada en el portafolio de ${esc(first(c.name))}.</li>
+    </ul>
+  </div>`;
+}
+
+function chat(a, side) {
+  const o = offer(a.offerId), b = biz(o.bizId), c = creator(a.creatorId);
+  const other = side === 'creator' ? b : c;
+  const open = ['aceptada', 'entregada', 'verificada'].includes(a.status);
+  const ms = msgsOf(a.id);
+  return `<section class="chat" aria-label="Mensajes con ${esc(other.name)}">
+    <div class="chat-head">${avatar(other.id, other.name, 'sm')}<div><b>${esc(other.name)}</b><div class="small muted">${side === 'creator' ? esc(b.colonia) : esc(c.handle)}</div></div></div>
+    ${open ? `<div class="chat-log" id="chat-log">${ms.length ? ms.map(m => `<div class="msg ${m.from === side ? 'me' : ''}">${esc(m.text)}<time>${hora(m.at)}</time></div>`).join('') : `<p class="chat-closed">Todavía no hay mensajes. Pónganse de acuerdo en día y hora.</p>`}</div>
+    <form class="chat-form" id="f-chat" data-id="${a.id}"><input class="in" name="text" placeholder="Escribe un mensaje" autocomplete="off" aria-label="Mensaje" required><button class="btn btn-primary btn-sm" type="submit">Enviar</button></form>`
+    : `<p class="chat-closed">${a.status === 'rechazada' ? 'Esta aplicación no fue seleccionada.' : 'El chat se abre cuando el negocio acepta la aplicación.'}</p>`}
+  </section>`;
+}
+
+function workCard(a) {
+  const o = offer(a.offerId), b = biz(o.bizId);
+  return `<article class="work">
+    <div class="work-img">${img(o.img || CAT[o.category], 640, 400, o.title)}</div>
+    <div class="work-body">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span class="tag">${esc(o.category)}</span><span class="pill pill-verificada">Verificada</span></div>
+      <h3>${esc(o.title)}</h3>
+      <span class="small muted">con ${esc(b.name)}</span>
+      <div class="stars" style="margin-top:6px" aria-label="${a.rating || 5} de 5">${stars(a.rating || 5)}</div>
+      ${a.review ? `<q>${esc(a.review)}</q>` : ''}
+    </div>
+  </article>`;
+}
+
+function portfolio(c, editable) {
+  const vs = verifiedOf(c.id).slice().reverse();
+  return `
+  <div class="profile">
+    <div class="panel">
+      <div class="who">${avatar(c.id, c.name, 'lg')}<div><h1>${esc(c.name)}</h1><p class="muted">${esc(c.handle)} · ${esc(c.colonia)}</p></div></div>
+      <p>${esc(c.bio || '')}</p>
+      <div class="facts" style="margin:16px 0 0">${c.nicho.map(n => `<span class="tag">${esc(n)}</span>`).join('')}${(c.formatos || []).map(n => `<span class="tag">${esc(n)}</span>`).join('')}</div>
+      <div class="stats">
+        <div><b>${verifiedOf(c.id).length}</b><span>colaboraciones verificadas</span></div>
+        <div><b>${ratingOf(c.id) ? ratingOf(c.id).toFixed(1) : '—'}</b><span>calificación promedio</span></div>
+        <div><b>${Number(c.followers || 0).toLocaleString('es-MX')}</b><span>seguidores</span></div>
+      </div>
+      ${editable ? `<a class="btn btn-ghost btn-sm" href="#/perfil" style="margin-top:18px">Editar perfil</a>` : ''}
+    </div>
+    ${slate(c)}
+  </div>
+  <div class="sechead"><h2>Portafolio verificado</h2><span class="small muted">Cada pieza la confirmó el negocio</span></div>
+  ${vs.length ? `<div class="cards">${vs.map(workCard).join('')}</div>` : `<div class="empty">Todavía no hay colaboraciones verificadas.${editable ? '<br><a class="btn btn-primary btn-sm" href="#/explorar">Buscar mi primera colaboración</a>' : ''}</div>`}`;
+}
+
+/* =========================================================
+   INTERFAZ DE CREADORES
+   ========================================================= */
+function cInicio() {
+  const c = meC(), mine = appsOfCreator(c.id);
+  const live = mine.filter(a => a.status === 'aceptada' || a.status === 'entregada');
+  const waiting = mine.filter(a => a.status === 'pendiente').length;
+  const recs = recommendedFor(c.id).filter(m => !m.locked && slotsLeft(m.o) && !mine.some(a => a.offerId === m.o.id)).slice(0, 3);
+  const parts = [];
+  if (live.length) parts.push(plural(live.length, 'colaboración en curso', 'colaboraciones en curso'));
+  if (waiting) parts.push(plural(waiting, 'aplicación esperando respuesta', 'aplicaciones esperando respuesta'));
+  return `
+  <header class="pagehead"><div><h1>Hola, ${esc(first(c.name))}</h1><p class="lead">${parts.length ? 'Tienes ' + parts.join(' y ') + '.' : 'Aún no tienes colaboraciones. Empieza por explorar las que están cerca de ti.'}</p></div><a class="btn btn-primary" href="#/explorar">Explorar colaboraciones</a></header>
+  <div class="home-grid">
+    ${slate(c)}
+    <section class="panel">
+      <h2>En curso</h2>
+      ${live.length ? live.map(a => {
+        const o = offer(a.offerId), b = biz(o.bizId);
+        return `<a class="live" href="#/colab/${a.id}">
+          <div class="live-img">${img(o.img || CAT[o.category], 160, 160, '')}</div>
+          <div class="live-txt">${a.status === 'aceptada' ? '<span class="rec">Por grabar</span>' : pill('entregada')}<b>${esc(o.title)}</b><span>${esc(b.name)} · ${leftTxt(o.deadline)}</span></div>
+          <span class="btn btn-sm btn-ghost">${a.status === 'aceptada' ? 'Abrir' : 'Ver'}</span>
+        </a>`;
+      }).join('') : `<div class="empty">Cuando un negocio te acepte, aquí verás el acuerdo, la fecha y el chat.</div>`}
+    </section>
+  </div>
+  <div class="sechead"><h2>Para ti esta semana</h2><a href="#/explorar">Ver todas</a></div>
+  ${recs.length ? `<div class="cards">${recs.map(m => offerCard(m)).join('')}</div>` : `<div class="empty">Ya aplicaste a todo lo disponible. Vuelve pronto.</div>`}`;
+}
+
+let fx = { q: '', cat: '', sort: 'match' };
+function exploreResults() {
+  const c = meC();
+  let list = recommendedFor(c.id);
+  if (fx.cat) list = list.filter(m => m.o.category === fx.cat);
+  if (fx.q) { const q = fx.q.toLowerCase(); list = list.filter(m => (m.o.title + ' ' + m.b.name + ' ' + m.o.gives + ' ' + m.o.colonia).toLowerCase().includes(q)); }
+  if (fx.sort === 'cerca') list.sort((x, y) => (x.locked - y.locked) || x.d - y.d);
+  if (fx.sort === 'pronto') list.sort((x, y) => (x.locked - y.locked) || x.o.deadline.localeCompare(y.o.deadline));
+  return list.length ? `<div class="cards">${list.map(m => offerCard(m)).join('')}</div>` : `<div class="empty">No encontramos colaboraciones con esos filtros.</div>`;
+}
+function cExplorar() {
+  const c = meC();
+  return `
+  <header class="pagehead"><div><h1>Explorar</h1><p class="lead">Colaboraciones abiertas ordenadas por qué tanto encajan con tu nicho y qué tan cerca están de ${esc(c.colonia)}.</p></div><a class="btn btn-ghost btn-sm" href="#/algoritmo">Cómo calculamos el match</a></header>
+  <div class="toolbar">
+    <input class="in" id="q" type="search" placeholder="Buscar negocio o colaboración" value="${esc(fx.q)}" aria-label="Buscar">
+    <select class="in" id="sort" aria-label="Ordenar">
+      <option value="match" ${fx.sort === 'match' ? 'selected' : ''}>Mejor match</option>
+      <option value="cerca" ${fx.sort === 'cerca' ? 'selected' : ''}>Más cerca</option>
+      <option value="pronto" ${fx.sort === 'pronto' ? 'selected' : ''}>Cierran pronto</option>
+    </select>
+  </div>
+  <div class="chips">${['', ...CATEGORIAS].map(k => `<button type="button" class="pick ${fx.cat === k ? 'on' : ''}" data-cat="${k}">${k || 'Todas'}</button>`).join('')}</div>
+  <div id="results">${exploreResults()}</div>`;
+}
+
+function cOferta(id) {
+  const o = offer(id), c = meC();
+  if (!o) return notFound();
+  const m = matchOffer(o, c.id), lv = levelOf(c.id), left = slotsLeft(o);
+  const mine = S.apps.find(a => a.offerId === id && a.creatorId === c.id);
+  let action;
+  if (mine) action = `<div class="note">Ya aplicaste · ${pill(mine.status)}</div><a class="btn btn-primary" href="#/colab/${mine.id}">Ver mi colaboración</a>`;
+  else if (o.status !== 'abierta') action = `<div class="note">Esta colaboración ya cerró.</div>`;
+  else if (m.locked) action = `<div class="note">Pide <b>${LEVELS[o.minLevel].name}</b>. Estás en <b>${lv.name}</b> con ${plural(lv.count, 'colaboración verificada', 'colaboraciones verificadas')}. Completa más para desbloquearla.</div>`;
+  else if (!left) action = `<div class="note">Los cupos ya se llenaron.</div>`;
+  else action = `<form id="f-apply" data-id="${o.id}" novalidate>
+      <label class="field"><span>¿Por qué tú? El negocio lo lee antes de aceptar.</span><textarea class="in" name="pitch" maxlength="280" placeholder="Ej. Hago reels de cafés con luz natural y ya conozco el lugar." required></textarea><p class="hint">Máximo 280 caracteres.</p></label>
+      <button class="btn btn-primary" type="submit" style="margin-top:16px">Aplicar</button>
+    </form>`;
+  return `
+  <a class="back" href="#/explorar">← Explorar</a>
+  <div class="hero-img">${img(o.img || CAT[o.category], 1400, 600, o.title)}<div class="hero-txt"><p>${esc(m.b.name)} · ${esc(o.colonia)}</p><h1>${esc(o.title)}</h1></div></div>
+  <div class="detail">
+    <section class="panel">
+      <div class="terms"><div><small>Recibes</small><p>${esc(o.gives)}</p></div><div><small>Entregas</small><p>${esc(o.asks)}</p></div></div>
+      <div class="facts"><span class="tag">${plural(left, 'cupo libre', 'cupos libres')} de ${o.slots}</span><span class="tag">Publicar antes del ${fecha(o.deadline)}</span><span class="tag">Nivel mínimo: ${LEVELS[o.minLevel].name}</span><span class="tag">${m.d.toFixed(1)} km de ti</span></div>
+      ${action}
+    </section>
+    <aside class="stack">
+      <section class="panel">
+        <h2>Por qué te la mostramos</h2>
+        <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:18px"><span class="score-big">${m.score}%</span><span class="muted">de match</span></div>
+        <div class="bars">${bar('Tu nicho', m.nicho, '45%')}${bar('Cercanía', m.cerca, '40%')}${bar('Cupos', m.cupos, '15%')}</div>
+      </section>
+      <section class="panel" style="margin-top:20px">
+        <div style="display:flex;gap:12px;align-items:center;margin-bottom:10px">${avatar(m.b.id, m.b.name)}<div><b>${esc(m.b.name)}</b><div class="small muted">${esc(m.b.category)} · ${esc(m.b.colonia)}</div></div></div>
+        <p class="small">${esc(m.b.about || '')}</p>
+      </section>
+    </aside>
+  </div>`;
+}
+
+function cColabs() {
+  const c = meC(), mine = appsOfCreator(c.id).slice().reverse();
+  const cols = [['pendiente', 'Aplicaste'], ['aceptada', 'Por grabar'], ['entregada', 'Entregadas'], ['verificada', 'Verificadas']];
+  const rej = mine.filter(a => a.status === 'rechazada');
+  return `
+  <header class="pagehead"><div><h1>Colaboraciones</h1><p class="lead">Cada colaboración avanza de izquierda a derecha: aplicas, el negocio acepta, entregas y el negocio verifica.</p></div></header>
+  <div class="board">${cols.map(([st, lbl]) => {
+    const list = mine.filter(a => a.status === st);
+    return `<section class="col"><h3>${lbl} <span>${list.length}</span></h3>${list.length ? list.map(a => {
+      const o = offer(a.offerId), b = biz(o.bizId);
+      return `<a class="mini" href="#/colab/${a.id}">${st === 'aceptada' ? '<span class="rec">Por grabar</span>' : `<span>${esc(b.name)}</span>`}<b>${esc(o.title)}</b><span>${st === 'aceptada' ? esc(b.name) + ' · ' : ''}${st === 'verificada' ? stars(a.rating || 5) : leftTxt(o.deadline)}</span></a>`;
+    }).join('') : `<p class="small muted">Nada aquí todavía.</p>`}</section>`;
+  }).join('')}</div>
+  ${rej.length ? `<p class="small muted" style="margin-top:18px">${plural(rej.length, 'aplicación no fue seleccionada', 'aplicaciones no fueron seleccionadas')}.</p>` : ''}
+  ${!mine.length ? `<div class="empty" style="margin-top:20px">Aún no aplicas a ninguna colaboración.<br><a class="btn btn-primary btn-sm" href="#/explorar">Explorar</a></div>` : ''}`;
+}
+
+function colabDetail(id) {
+  const a = appRec(id), u = me();
+  if (!a) return notFound();
+  const o = offer(a.offerId), b = biz(o.bizId), c = creator(a.creatorId);
+  const isC = u.role === 'creator';
+  if ((isC && a.creatorId !== u.profileId) || (!isC && o.bizId !== u.profileId)) return notFound();
+  let action = '';
+  if (isC) {
+    if (a.status === 'aceptada') action = `<form id="f-deliver" data-id="${a.id}" class="panel" novalidate style="margin-top:20px">
+        <h2>Entrega tu contenido</h2>
+        <label class="field"><span>Link de tu publicación</span><input class="in" name="link" placeholder="instagram.com/reel/…" required></label>
+        <p class="hint">${esc(b.name)} lo revisa y confirma. Al confirmarlo sube a tu portafolio.</p>
+        <button class="btn btn-primary" type="submit" style="margin-top:14px">Marcar como entregada</button>
+      </form>`;
+    if (a.status === 'entregada') action = `<div class="note" style="margin-top:20px">Entregaste <b>${esc(a.link)}</b>. ${esc(b.name)} tiene que confirmarlo.</div>`;
+    if (a.status === 'pendiente') action = `<div class="panel" style="margin-top:20px"><p>Tu mensaje: “${esc(a.pitch)}”</p><div class="actions" style="margin-top:14px"><button class="btn btn-danger btn-sm" type="button" data-withdraw="${a.id}">Retirar aplicación</button></div></div>`;
+  } else {
+    if (a.status === 'pendiente') action = `<div class="panel" style="margin-top:20px"><p>“${esc(a.pitch)}”</p><div class="actions" style="margin-top:14px"><button class="btn btn-ok btn-sm" type="button" data-accept="${a.id}" ${slotsLeft(o) ? '' : 'disabled'}>Aceptar</button><button class="btn btn-danger btn-sm" type="button" data-reject="${a.id}">No por ahora</button></div></div>`;
+    if (a.status === 'entregada') action = `<form id="f-confirm" data-id="${a.id}" class="panel" novalidate style="margin-top:20px">
+        <h2>Confirma la entrega</h2>
+        <p class="small">Entregó: <b>${esc(a.link)}</b></p>
+        <div class="field" style="margin-top:14px"><span>Califica la colaboración</span><div class="star-pick" data-val="5">${[1, 2, 3, 4, 5].map(n => `<button type="button" class="on" data-star="${n}" aria-label="${n} estrellas">★</button>`).join('')}</div></div>
+        <label class="field"><span>Reseña corta (aparece en su portafolio)</span><input class="in" name="review" maxlength="120" placeholder="Ej. Puntual y el reel quedó increíble." required></label>
+        <button class="btn btn-primary" type="submit" style="margin-top:16px">Confirmar y verificar</button>
+      </form>`;
+    if (a.status === 'aceptada') action = `<div class="note" style="margin-top:20px">Esperando a que ${esc(first(c.name))} publique y marque la entrega.</div>`;
+  }
+  if (a.status === 'verificada') action = `<div class="panel" style="margin-top:20px"><h2>Verificada</h2><div class="stars" style="font-size:1.2rem">${stars(a.rating || 5)}</div>${a.review ? `<p style="margin-top:6px">“${esc(a.review)}”</p>` : ''}<p class="small muted" style="margin-top:8px">${esc(a.link || '')}</p></div>`;
+  return `
+  <a class="back" href="${isC ? '#/colabs' : '#/gestionar/' + o.id}">← ${isC ? 'Colaboraciones' : esc(o.title)}</a>
+  <header class="pagehead"><div><p class="muted" style="margin-bottom:6px">${isC ? esc(b.name) : `<a href="#/creador/${c.id}" class="link">${esc(c.name)}</a> · ${esc(c.handle)}`}</p><h1>${esc(o.title)}</h1></div>${pill(a.status)}</header>
+  <div class="detail">
+    <div>
+      ${a.status !== 'rechazada' ? `<div class="panel">${track(a.status)}</div><div style="margin-top:20px">${agreement(a)}</div>` : `<div class="note">Esta aplicación no fue seleccionada.</div>`}
+      ${action}
+    </div>
+    ${chat(a, isC ? 'creator' : 'biz')}
+  </div>`;
+}
+
+function cPortafolio() {
+  return `<header class="pagehead"><div><h1>Tu portafolio</h1><p class="lead">Así te ven los negocios cuando aplicas.</p></div></header>${portfolio(meC(), true)}`;
+}
+
+function cPerfil() {
+  const c = meC(), u = me();
+  return `
+  <header class="pagehead"><div><h1>Perfil</h1><p class="lead">Esta información se usa para recomendarte colaboraciones.</p></div></header>
+  <form id="f-cprofile" class="panel" style="max-width:720px" novalidate>
+    <div class="row2"><label class="field"><span>Nombre</span><input class="in" name="name" value="${esc(c.name)}" required></label><label class="field" style="margin-top:0"><span>Usuario</span><input class="in" name="handle" value="${esc(c.handle)}" required></label></div>
+    <div class="row2" style="margin-top:16px"><label class="field"><span>Colonia</span><select class="in" name="colonia">${Object.keys(COLONIAS).map(k => `<option ${k === c.colonia ? 'selected' : ''}>${k}</option>`).join('')}</select></label><label class="field" style="margin-top:0"><span>Seguidores</span><input class="in" name="followers" type="number" min="0" value="${esc(c.followers)}"></label></div>
+    <div class="field" style="margin-top:16px"><span>Nicho (hasta 3)</span><div class="picks" data-group="nicho" data-live>${CATEGORIAS.map(k => `<button type="button" class="pick ${c.nicho.includes(k) ? 'on' : ''}" data-pick="${k}">${k}</button>`).join('')}</div></div>
+    <div class="field"><span>Formatos</span><div class="picks" data-group="formatos" data-live>${FORMATOS.map(k => `<button type="button" class="pick ${(c.formatos || []).includes(k) ? 'on' : ''}" data-pick="${k}">${k}</button>`).join('')}</div></div>
+    <label class="field"><span>Bio</span><textarea class="in" name="bio" maxlength="140">${esc(c.bio || '')}</textarea></label>
+    <div class="actions" style="margin-top:20px"><button class="btn btn-primary" type="submit">Guardar cambios</button></div>
+  </form>
+  ${accountBox(u)}`;
+}
+
+function accountBox(u) {
+  return `<section class="panel" style="max-width:720px;margin-top:20px">
+    <h2>Cuenta</h2>
+    <p class="small muted">${esc(u.email)}</p>
+    <div class="actions" style="margin-top:14px"><button class="btn btn-ghost btn-sm" type="button" data-logout>Cerrar sesión</button><button class="btn btn-danger btn-sm" type="button" data-reset>Reiniciar datos del demo</button></div>
+  </section>`;
+}
+
+/* =========================================================
+   INTERFAZ DE NEGOCIOS
+   ========================================================= */
+function bResumen() {
+  const b = meB(), offers = offersOfBiz(b.id), apps = appsOfBiz(b.id);
+  const open = offers.filter(o => o.status === 'abierta');
+  const pend = apps.filter(a => a.status === 'pendiente');
+  const deliv = apps.filter(a => a.status === 'entregada');
+  const ver = apps.filter(a => a.status === 'verificada').slice().reverse();
+  const todos = [
+    ...deliv.map(a => { const c = creator(a.creatorId), o = offer(a.offerId); return { href: `#/colab/${a.id}`, who: c, t: `${first(c.name)} entregó su contenido`, s: `${o.title} · confírmalo para verificarlo`, btn: 'Confirmar' }; }),
+    ...open.filter(o => pend.some(a => a.offerId === o.id)).map(o => { const n = pend.filter(a => a.offerId === o.id).length; return { href: `#/gestionar/${o.id}`, who: null, o, t: plural(n, 'aplicación nueva', 'aplicaciones nuevas'), s: o.title, btn: 'Revisar' }; })
+  ];
+  return `
+  <header class="pagehead"><div><h1>${esc(b.name)}</h1><p class="lead">${todos.length ? `Tienes ${plural(todos.length, 'cosa pendiente', 'cosas pendientes')}.` : 'Todo al día.'}</p></div><a class="btn btn-primary" href="#/nueva">Publicar colaboración</a></header>
+  <div class="kpis">
+    <a href="#/colaboraciones"><b>${open.length}</b><span>colaboraciones abiertas</span></a>
+    <div><b>${pend.length}</b><span>aplicaciones por revisar</span></div>
+    <div><b>${deliv.length}</b><span>entregas por confirmar</span></div>
+    <div><b>${ver.length}</b><span>piezas de contenido verificadas</span></div>
+  </div>
+  <div class="biz-grid">
+    <section class="panel">
+      <h2>Necesita tu atención</h2>
+      ${todos.length ? todos.map(t => `<a class="todo" href="${t.href}">${t.who ? avatar(t.who.id, t.who.name) : `<span class="t-thumb" style="width:40px;height:40px;border-radius:50%;overflow:hidden">${img(t.o.img || CAT[t.o.category], 80, 80, '')}</span>`}<div class="todo-txt"><b>${esc(t.t)}</b><span>${esc(t.s)}</span></div><span class="btn btn-sm btn-ghost">${t.btn}</span></a>`).join('') : `<div class="empty">No hay nada pendiente.</div>`}
+    </section>
+    <section class="panel">
+      <h2>Contenido verificado</h2>
+      ${ver.length ? `<div class="gallery">${ver.slice(0, 4).map(a => { const c = creator(a.creatorId), o = offer(a.offerId); return `<a class="work" href="#/creador/${c.id}"><div class="work-img">${img(o.img || CAT[o.category], 500, 320, o.title)}</div><div class="work-body"><span class="small muted">${esc(o.title)}</span><h3 style="font-size:1.1rem">${esc(c.name)}</h3><div class="stars">${stars(a.rating || 5)}</div><span class="small muted">${esc(a.link || '')}</span></div></a>`; }).join('')}</div>` : `<div class="empty">Cuando confirmes entregas, el contenido aparece aquí.</div>`}
+    </section>
+  </div>`;
+}
+
+function bColaboraciones() {
+  const b = meB(), offers = offersOfBiz(b.id).slice().sort((x, y) => (x.status === 'abierta' ? 0 : 1) - (y.status === 'abierta' ? 0 : 1));
+  return `
+  <header class="pagehead"><div><h1>Colaboraciones</h1><p class="lead">Todo lo que has publicado. Entra a una para ver aplicantes y entregas.</p></div><a class="btn btn-primary" href="#/nueva">Publicar colaboración</a></header>
+  ${offers.length ? `<table class="table">
+    <thead><tr><th>Colaboración</th><th>Estado</th><th>Aplicantes</th><th>Cupos</th><th>Fecha límite</th></tr></thead>
+    <tbody>${offers.map(o => {
+      const as = S.apps.filter(a => a.offerId === o.id), p = as.filter(a => a.status === 'pendiente').length;
+      return `<tr data-go="#/gestionar/${o.id}"><td><div class="t-title">${img(o.img || CAT[o.category], 120, 120, '')}<div><b>${esc(o.title)}</b><span class="small muted">${esc(o.gives)}</span></div></div></td>
+        <td>${o.status === 'abierta' ? '<span class="pill pill-verificada">Abierta</span>' : '<span class="pill pill-rechazada">Cerrada</span>'}</td>
+        <td>${as.length}${p ? ` <span class="pill pill-pendiente">${p} nuevas</span>` : ''}</td>
+        <td>${usedSlots(o.id)} de ${o.slots}</td><td>${fecha(o.deadline)}</td></tr>`;
+    }).join('')}</tbody></table>` : `<div class="empty">Aún no publicas colaboraciones.<br><a class="btn btn-primary btn-sm" href="#/nueva">Publicar la primera</a></div>`}`;
+}
+
+let nf = null;
+function newDraft() { const b = meB(); const d = new Date(); d.setDate(d.getDate() + 21); return { title: '', gives: '', asks: '', category: b.category, colonia: b.colonia, slots: 2, deadline: d.toISOString().slice(0, 10), minLevel: 0 }; }
+function previewCard() { const b = meB(); const o = { ...nf, id: 'preview', bizId: b.id, img: CAT[nf.category] }; return offerCard({ o, b, d: 0, score: 0, locked: false }, { preview: true }); }
+function bNueva() {
+  if (!nf) nf = newDraft();
+  return `
+  <a class="back" href="#/colaboraciones">← Colaboraciones</a>
+  <header class="pagehead"><div><h1>Publicar colaboración</h1><p class="lead">Lo que ofreces y lo que pides se convierte en el acuerdo que ven los dos.</p></div></header>
+  <div class="newgrid">
+    <form id="f-new" class="panel" novalidate>
+      <label class="field"><span>Título</span><input class="in" name="title" maxlength="70" value="${esc(nf.title)}" placeholder="Ej. Desayuno para dos a cambio de un reel" required></label>
+      <div class="row2" style="margin-top:16px">
+        <label class="field"><span>Qué ofreces</span><input class="in" name="gives" maxlength="90" value="${esc(nf.gives)}" placeholder="Ej. Desayuno para 2 (hasta $500)" required></label>
+        <label class="field" style="margin-top:0"><span>Qué pides a cambio</span><input class="in" name="asks" maxlength="90" value="${esc(nf.asks)}" placeholder="Ej. 1 reel + 2 historias" required></label>
+      </div>
+      <div class="row3" style="margin-top:16px">
+        <label class="field"><span>Categoría</span><select class="in" name="category">${CATEGORIAS.map(k => `<option ${k === nf.category ? 'selected' : ''}>${k}</option>`).join('')}</select></label>
+        <label class="field" style="margin-top:0"><span>Colonia</span><select class="in" name="colonia">${Object.keys(COLONIAS).map(k => `<option ${k === nf.colonia ? 'selected' : ''}>${k}</option>`).join('')}</select></label>
+        <label class="field" style="margin-top:0"><span>Cupos</span><input class="in" name="slots" type="number" min="1" max="10" value="${nf.slots}"></label>
+      </div>
+      <div class="row2" style="margin-top:16px">
+        <label class="field"><span>Publicar antes del</span><input class="in" name="deadline" type="date" value="${nf.deadline}"></label>
+        <label class="field" style="margin-top:0"><span>Nivel mínimo</span><select class="in" name="minLevel">${LEVELS.map(L => `<option value="${L.n}" ${+nf.minLevel === L.n ? 'selected' : ''}>${L.name}${L.n ? ` (${L.min}+ verificadas)` : ' (abierta a todos)'}</option>`).join('')}</select></label>
+      </div>
+      <p class="hint">Si eliges “Nuevo”, pueden aplicar creadores que todavía no tienen colaboraciones verificadas.</p>
+      <p class="err" id="new-err" hidden></p>
+      <div class="actions" style="margin-top:20px"><button class="btn btn-primary" type="submit">Publicar</button><a class="btn btn-ghost" href="#/colaboraciones">Cancelar</a></div>
+    </form>
+    <div class="preview-wrap"><p>Así la verán los creadores</p><div id="preview">${previewCard()}</div></div>
+  </div>`;
+}
+
+function bGestionar(id) {
+  const o = offer(id), b = meB();
+  if (!o || o.bizId !== b.id) return notFound();
+  const all = S.apps.filter(a => a.offerId === id);
+  const pend = all.filter(a => a.status === 'pendiente').map(rankApplicant).sort((x, y) => y.score - x.score);
+  const live = all.filter(a => a.status === 'aceptada' || a.status === 'entregada');
+  const done = all.filter(a => a.status === 'verificada' || a.status === 'rechazada');
+  const left = slotsLeft(o);
+  return `
+  <a class="back" href="#/colaboraciones">← Colaboraciones</a>
+  <div class="hero-img" style="height:220px">${img(o.img || CAT[o.category], 1400, 440, o.title)}<div class="hero-txt"><p>${o.status === 'abierta' ? `${plural(left, 'cupo libre', 'cupos libres')} de ${o.slots} · publicar antes del ${fecha(o.deadline)}` : 'Cerrada'}</p><h1>${esc(o.title)}</h1></div></div>
+  <div class="terms"><div><small>Ofreces</small><p>${esc(o.gives)}</p></div><div><small>Pides</small><p>${esc(o.asks)}</p></div></div>
+  <div class="sechead" style="margin-top:28px"><h2>Aplicantes</h2><a href="#/algoritmo">Cómo se ordenan</a></div>
+  <p class="small muted" style="margin:-8px 0 16px">Ordenados por nicho, cercanía, calificación y nivel. El número de seguidores no cuenta.</p>
+  ${pend.length ? `<div class="grid2">${pend.map((r, i) => {
+    const lv = levelOf(r.c.id);
+    return `<article class="applicant ${i === 0 ? 'top' : ''}">
+      <div class="applicant-head">${avatar(r.c.id, r.c.name)}<div><a href="#/creador/${r.c.id}"><b>${esc(r.c.name)}</b></a><div class="small muted">${esc(r.c.handle)} · ${r.d.toFixed(1)} km</div></div><div class="score"><b>${r.score}</b><span>${i === 0 ? 'mejor opción' : 'puntaje'}</span></div></div>
+      <q>${esc(r.a.pitch)}</q>
+      <div class="facts" style="margin:0"><span class="tag">${esc(lv.name)}</span><span class="tag">${plural(lv.count, 'verificada', 'verificadas')}</span><span class="tag">${r.r ? '★ ' + r.r.toFixed(1) : 'Sin calificaciones'}</span></div>
+      <div class="bars">${bar('Nicho', r.nicho)}${bar('Cercanía', r.cerca)}${bar('Calificación', r.calif)}${bar('Nivel', r.nivel)}</div>
+      <div class="actions"><button class="btn btn-ok btn-sm" type="button" data-accept="${r.a.id}" ${left ? '' : 'disabled'}>Aceptar</button><button class="btn btn-danger btn-sm" type="button" data-reject="${r.a.id}">No por ahora</button><a class="btn btn-ghost btn-sm" href="#/creador/${r.c.id}">Ver portafolio</a></div>
+    </article>`;
+  }).join('')}</div>` : `<div class="empty">No hay aplicaciones nuevas.</div>`}
+  ${live.length ? `<div class="sechead"><h2>En curso</h2></div><div class="grid2">${live.map(a => { const c = creator(a.creatorId); return `<a class="applicant" href="#/colab/${a.id}"><div class="applicant-head">${avatar(c.id, c.name)}<div><b>${esc(c.name)}</b><div class="small muted">${esc(c.handle)}</div></div><div class="score">${a.status === 'aceptada' ? '<span class="rec">Grabando</span>' : pill('entregada')}</div></div><span class="small muted">${a.status === 'entregada' ? 'Entregó: ' + esc(a.link) + '. Confirma para verificar.' : 'Abrir acuerdo y chat'}</span></a>`; }).join('')}</div>` : ''}
+  ${done.length ? `<div class="sechead"><h2>Historial</h2></div><div class="grid2">${done.map(a => { const c = creator(a.creatorId); return `<a class="applicant" href="${a.status === 'verificada' ? '#/colab/' + a.id : '#/creador/' + c.id}" style="flex-direction:row;align-items:center">${avatar(c.id, c.name, 'sm')}<b style="flex:1">${esc(c.name)}</b>${pill(a.status)}</a>`; }).join('')}</div>` : ''}
+  ${o.status === 'abierta' ? `<div style="margin-top:34px"><button class="btn btn-danger btn-sm" type="button" data-close="${o.id}">Cerrar colaboración</button></div>` : ''}`;
+}
+
+function bCreador(id) {
+  const c = creator(id);
+  if (!c) return notFound();
+  return `<a class="back" href="javascript:history.back()">← Volver</a>${portfolio(c, false)}`;
+}
+
+function bPerfil() {
+  const b = meB(), u = me();
+  return `
+  <header class="pagehead"><div><h1>Tu negocio</h1><p class="lead">Los creadores ven esta información en cada colaboración que publicas.</p></div></header>
+  <form id="f-bprofile" class="panel" style="max-width:720px" novalidate>
+    <label class="field"><span>Nombre del negocio</span><input class="in" name="name" value="${esc(b.name)}" required></label>
+    <div class="row2" style="margin-top:16px"><label class="field"><span>Categoría</span><select class="in" name="category">${CATEGORIAS.map(k => `<option ${k === b.category ? 'selected' : ''}>${k}</option>`).join('')}</select></label><label class="field" style="margin-top:0"><span>Colonia</span><select class="in" name="colonia">${Object.keys(COLONIAS).map(k => `<option ${k === b.colonia ? 'selected' : ''}>${k}</option>`).join('')}</select></label></div>
+    <label class="field" style="margin-top:16px"><span>Descripción</span><input class="in" name="about" maxlength="120" value="${esc(b.about || '')}"></label>
+    <div class="field"><span>Contenido que te interesa</span><div class="picks" data-group="formatos" data-live>${FORMATOS.map(k => `<button type="button" class="pick ${(b.formatos || []).includes(k) ? 'on' : ''}" data-pick="${k}">${k}</button>`).join('')}</div></div>
+    <div class="actions" style="margin-top:20px"><button class="btn btn-primary" type="submit">Guardar cambios</button></div>
+  </form>
+  ${accountBox(u)}`;
+}
+
+/* =========================================================
+   CÓMO FUNCIONA (ambos)
+   ========================================================= */
+function vAlgoritmo() {
+  return `
+  <a class="back" href="javascript:history.back()">← Volver</a>
+  <header class="pagehead"><div><h1>Cómo funciona el match</h1><p class="lead">Dos reglas simples y visibles. El objetivo: que alguien que empieza tenga oportunidades reales y que el negocio corra menos riesgo.</p></div></header>
+  <div class="grid2">
+    <section class="panel"><h2>Colaboraciones para un creador</h2>
+      <div class="bars" style="margin:10px 0 16px">${bar('Tu nicho', .45)}${bar('Cercanía', .40)}${bar('Cupos', .15)}</div>
+      <ol class="small" style="margin-left:18px;display:grid;gap:6px">
+        <li>Toma las colaboraciones abiertas.</li>
+        <li>Mide la distancia entre colonias con la fórmula de haversine.</li>
+        <li>Nicho igual vale 1 y distinto vale 0.3. La cercanía vale 1 − km ÷ 12.</li>
+        <li>Suma ponderada: 45% nicho, 40% cercanía, 15% cupos.</li>
+        <li>Si no tienes el nivel mínimo, la colaboración aparece al final como bloqueada.</li>
+      </ol>
+    </section>
+    <section class="panel"><h2>Aplicantes para un negocio</h2>
+      <div class="bars" style="margin:10px 0 16px">${bar('Nicho', .30)}${bar('Cercanía', .25)}${bar('Calificación', .25)}${bar('Nivel', .20)}</div>
+      <ol class="small" style="margin-left:18px;display:grid;gap:6px">
+        <li>Toma solo las aplicaciones pendientes.</li>
+        <li>Sin calificaciones previas cuenta como 0.6, para no castigar a quien empieza.</li>
+        <li>El nivel sale de las colaboraciones verificadas: 0, 1, 3 y 6 o más.</li>
+        <li>Los seguidores no entran al cálculo.</li>
+        <li>El negocio siempre decide al final.</li>
+      </ol>
+    </section>
+  </div>`;
+}
+
+function notFound() { return `<div class="empty">No encontramos esta página.<br><a class="btn btn-primary btn-sm" href="#/">Ir al inicio</a></div>`; }
+
+/* =========================================================
+   ROUTER
+   ========================================================= */
+const PUBLIC = ['entrar', 'login', 'registro'];
+const C_ROUTES = { inicio: cInicio, explorar: cExplorar, oferta: cOferta, colabs: cColabs, colab: colabDetail, portafolio: cPortafolio, perfil: cPerfil, algoritmo: vAlgoritmo };
+const B_ROUTES = { resumen: bResumen, colaboraciones: bColaboraciones, nueva: bNueva, gestionar: bGestionar, colab: colabDetail, creador: bCreador, perfil: bPerfil, algoritmo: vAlgoritmo };
+
+function render() {
+  const [, route, param] = (location.hash || '#/').split('/');
+  const u = me();
+  const home = u ? (u.role === 'creator' ? '#/inicio' : '#/resumen') : '#/entrar';
+  if (!route) { location.replace(home); return; }
+
+  if (PUBLIC.includes(route)) {
+    if (u && !(route === 'registro' && draft && draft.step === 3)) { location.replace(home); return; }
+    document.body.dataset.theme = 'creator';
+    document.title = 'First Take · Entrar';
+    $('#app').innerHTML = route === 'entrar' ? vEntrar() : route === 'login' ? vLogin() : vRegistro(param === 'negocio' ? 'biz' : 'creator');
+    authErr = '';
+    return;
+  }
+  if (!u) { location.replace('#/entrar'); return; }
+
+  const table = u.role === 'creator' ? C_ROUTES : B_ROUTES;
+  const view = table[route];
+  if (!view) { location.replace(home); return; }
+  if (route !== 'nueva') nf = null;
+  document.body.dataset.theme = u.role === 'creator' ? 'creator' : 'biz';
+  document.title = 'First Take · ' + (u.role === 'creator' ? 'Creadores' : 'Negocios');
+  $('#app').innerHTML = shell(view(param));
+  const log = $('#chat-log'); if (log) log.scrollTop = log.scrollHeight;
+}
+
+/* =========================================================
+   ACCIONES
+   ========================================================= */
+function login(uid) { S.session = uid; draft = null; save(); const u = me(); go(u.role === 'creator' ? '#/inicio' : '#/resumen'); }
+function logout() { S.session = null; save(); go('#/entrar'); toast('Cerraste sesión.'); }
+function setStatus(aid, st, extra) { Object.assign(appRec(aid), { status: st }, extra || {}); save(); }
+function sysMsg(aid, from, text) { S.messages.push({ id: nid('m'), appId: aid, from, text, at: new Date().toISOString().slice(0, 16) }); }
+
+document.addEventListener('click', e => {
+  const t = e.target;
+  const row = t.closest('[data-go]');
+  if (row && !t.closest('a, button, input, select, textarea')) { go(row.dataset.go); return; }
+
+  const demo = t.closest('[data-demo]'); if (demo) { login(demo.dataset.demo); return; }
+  if (t.closest('[data-logout]')) { logout(); return; }
+  if (t.closest('[data-reset]')) { S = seed(); save(); draft = null; go('#/entrar'); toast('Datos del demo reiniciados.'); return; }
+  if (t.closest('[data-back-step]')) { draft.step = 1; render(); return; }
+
+  const pk = t.closest('[data-pick]');
+  if (pk) {
+    const grp = pk.parentElement.dataset.group, val = pk.dataset.pick;
+    if (pk.parentElement.hasAttribute('data-live')) { pk.classList.toggle('on'); if (grp === 'nicho' && pk.parentElement.querySelectorAll('.on').length > 3) { pk.classList.remove('on'); toast('Elige hasta 3.'); } return; }
+    const arr = draft.data[grp];
+    const i = arr.indexOf(val);
+    if (i >= 0) arr.splice(i, 1); else { if (grp === 'nicho' && arr.length >= 3) { toast('Elige hasta 3.'); return; } arr.push(val); }
+    pk.classList.toggle('on', arr.includes(val));
+    return;
+  }
+
+  const cat = t.closest('[data-cat]');
+  if (cat) { fx.cat = cat.dataset.cat; document.querySelectorAll('[data-cat]').forEach(b => b.classList.toggle('on', b.dataset.cat === fx.cat)); $('#results').innerHTML = exploreResults(); return; }
+
+  const acc = t.closest('[data-accept]');
+  if (acc) { const a = appRec(acc.dataset.accept); setStatus(a.id, 'aceptada'); sysMsg(a.id, 'biz', `¡Hola ${first(creator(a.creatorId).name)}! Te aceptamos. Escríbenos para acordar día y hora.`); save(); toast('Aceptada. Se creó el acuerdo y se abrió el chat.'); render(); return; }
+  const rej = t.closest('[data-reject]');
+  if (rej) { setStatus(rej.dataset.reject, 'rechazada'); toast('Marcada como “no por ahora”.'); render(); return; }
+  const wd = t.closest('[data-withdraw]');
+  if (wd) { S.apps = S.apps.filter(a => a.id !== wd.dataset.withdraw); save(); toast('Retiraste tu aplicación.'); go('#/colabs'); return; }
+  const cl = t.closest('[data-close]');
+  if (cl) { offer(cl.dataset.close).status = 'cerrada'; save(); toast('Colaboración cerrada.'); render(); return; }
+
+  const st = t.closest('[data-star]');
+  if (st) { const w = st.parentElement, v = +st.dataset.star; w.dataset.val = v; w.querySelectorAll('button').forEach(b => b.classList.toggle('on', +b.dataset.star <= v)); return; }
+});
+
+document.addEventListener('input', e => {
+  if (e.target.id === 'q') { fx.q = e.target.value; $('#results').innerHTML = exploreResults(); }
+  const f = e.target.form;
+  if (f && f.id === 'f-new') { const fd = new FormData(f); nf = Object.fromEntries(fd.entries()); nf.slots = +nf.slots || 1; $('#preview').innerHTML = previewCard(); }
+});
+document.addEventListener('change', e => {
+  if (e.target.id === 'sort') { fx.sort = e.target.value; $('#results').innerHTML = exploreResults(); }
+  const f = e.target.form;
+  if (f && f.id === 'f-new') { const fd = new FormData(f); nf = Object.fromEntries(fd.entries()); nf.slots = +nf.slots || 1; $('#preview').innerHTML = previewCard(); }
+});
+
+function picked(form, grp) { return [...form.querySelectorAll(`[data-group="${grp}"] .pick.on`)].map(b => b.dataset.pick); }
+
+document.addEventListener('submit', e => {
+  e.preventDefault();
+  const f = e.target, v = Object.fromEntries(new FormData(f).entries());
+  const trim = k => String(v[k] || '').trim();
+
+  if (f.id === 'f-login') {
+    const u = S.users.find(x => x.email === trim('email').toLowerCase());
+    if (!u || u.pass !== hash(v.pass)) { authErr = 'El correo o la contraseña no coinciden. Revísalos o crea una cuenta.'; render(); return; }
+    login(u.id); toast('Sesión iniciada.'); return;
+  }
+  if (f.id === 'f-reg1') {
+    const email = trim('email').toLowerCase();
+    Object.assign(draft.data, { name: trim('name'), email });
+    if (!draft.data.name) authErr = 'Escribe tu nombre.';
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) authErr = 'Escribe un correo válido, por ejemplo nombre@correo.com.';
+    else if (S.users.some(u => u.email === email)) authErr = 'Ya existe una cuenta con ese correo. Inicia sesión.';
+    else if (String(v.pass || '').length < 6) authErr = 'La contraseña necesita al menos 6 caracteres.';
+    else { draft.data.pass = hash(v.pass); draft.step = 2; }
+    render(); return;
+  }
+  if (f.id === 'f-reg2') {
+    const d = draft.data;
+    if (draft.role === 'creator') {
+      Object.assign(d, { handle: trim('handle'), colonia: v.colonia, followers: +v.followers || 0, bio: trim('bio') });
+      if (!d.handle) { authErr = 'Escribe tu usuario de Instagram o TikTok.'; render(); return; }
+      if (!d.nicho.length) { authErr = 'Elige al menos un nicho.'; render(); return; }
+      if (!d.handle.startsWith('@')) d.handle = '@' + d.handle;
+      const cid = nid('c'), uid = nid('u');
+      S.creators.push({ id: cid, name: d.name, handle: d.handle, colonia: d.colonia, nicho: d.nicho.slice(), formatos: d.formatos.slice(), followers: d.followers, bio: d.bio });
+      S.users.push({ id: uid, email: d.email, pass: d.pass, role: 'creator', profileId: cid });
+      S.session = uid;
+    } else {
+      Object.assign(d, { bizname: trim('bizname'), category: v.category, colonia: v.colonia, about: trim('about') });
+      if (!d.bizname) { authErr = 'Escribe el nombre de tu negocio.'; render(); return; }
+      const bid = nid('b'), uid = nid('u');
+      S.businesses.push({ id: bid, name: d.bizname, category: d.category, colonia: d.colonia, contact: d.name, about: d.about, formatos: d.formatos.slice() });
+      S.users.push({ id: uid, email: d.email, pass: d.pass, role: 'biz', profileId: bid });
+      S.session = uid;
+    }
+    draft.step = 3; save(); render(); return;
+  }
+
+  if (f.id === 'f-apply') {
+    const pitch = trim('pitch');
+    if (!pitch) { toast('Escribe por qué tú antes de aplicar.'); return; }
+    const aid = nid('a');
+    S.apps.push({ id: aid, offerId: f.dataset.id, creatorId: meC().id, pitch, status: 'pendiente' });
+    save(); toast('Aplicación enviada.'); go('#/colab/' + aid); return;
+  }
+  if (f.id === 'f-deliver') {
+    const link = trim('link'); if (!link) { toast('Pega el link de tu publicación.'); return; }
+    setStatus(f.dataset.id, 'entregada', { link }); sysMsg(f.dataset.id, 'creator', `Listo, ya publiqué: ${link}`); save();
+    toast('Entregada. El negocio la va a confirmar.'); render(); return;
+  }
+  if (f.id === 'f-confirm') {
+    const review = trim('review'); if (!review) { toast('Escribe una reseña corta.'); return; }
+    const a = appRec(f.dataset.id), before = levelOf(a.creatorId).n;
+    setStatus(a.id, 'verificada', { rating: +f.querySelector('.star-pick').dataset.val, review });
+    const after = levelOf(a.creatorId);
+    toast(after.n > before ? `Verificada. ${first(creator(a.creatorId).name)} subió a ${after.name}.` : 'Verificada. Ya está en su portafolio.');
+    render(); return;
+  }
+  if (f.id === 'f-chat') {
+    const text = trim('text'); if (!text) return;
+    sysMsg(f.dataset.id, me().role === 'creator' ? 'creator' : 'biz', text); save(); render();
+    const inp = document.querySelector('#f-chat .in'); if (inp) inp.focus();
+    return;
+  }
+  if (f.id === 'f-new') {
+    const err = $('#new-err');
+    if (!trim('title') || !trim('gives') || !trim('asks')) { err.textContent = 'Completa título, qué ofreces y qué pides.'; err.hidden = false; return; }
+    const o = { id: nid('o'), bizId: meB().id, status: 'abierta', title: trim('title'), gives: trim('gives'), asks: trim('asks'), category: v.category, colonia: v.colonia, slots: Math.max(1, Math.min(10, +v.slots || 1)), deadline: v.deadline, minLevel: +v.minLevel || 0, img: CAT[v.category] };
+    S.offers.unshift(o); save(); nf = null;
+    toast('Publicada. Ya la ven los creadores.'); go('#/gestionar/' + o.id); return;
+  }
+  if (f.id === 'f-cprofile') {
+    const c = meC(), nicho = picked(f, 'nicho');
+    if (!nicho.length) { toast('Elige al menos un nicho.'); return; }
+    Object.assign(c, { name: trim('name') || c.name, handle: trim('handle') || c.handle, colonia: v.colonia, followers: +v.followers || 0, bio: trim('bio'), nicho, formatos: picked(f, 'formatos') });
+    save(); toast('Guardaste tu perfil.'); render(); return;
+  }
+  if (f.id === 'f-bprofile') {
+    const b = meB();
+    Object.assign(b, { name: trim('name') || b.name, category: v.category, colonia: v.colonia, about: trim('about'), formatos: picked(f, 'formatos') });
+    save(); toast('Guardaste los datos del negocio.'); render(); return;
+  }
+});
+
+window.addEventListener('hashchange', () => { render(); window.scrollTo(0, 0); });
+render();
+</script>
+</body>
+</html>
