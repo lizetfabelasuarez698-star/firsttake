@@ -66,11 +66,21 @@
         elFormularios.classList.remove('hidden')
         return
       }
-      const { data: perfil, error } = await supabase
+      let { data: perfil } = await supabase
         .from('perfiles')
         .select('nombre')
         .eq('id', session.user.id)
-        .single()
+        .maybeSingle()
+
+      // Si el perfil aun no existe (p. ej. la persona confirmo su correo y este
+      // es su primer login), se crea ahora: ya hay sesion, asi que RLS lo permite.
+      const nombreGuardado = session.user.user_metadata?.nombre
+      if (!perfil && nombreGuardado) {
+        const { error: errorPerfil } = await supabase
+          .from('perfiles')
+          .insert({ id: session.user.id, nombre: nombreGuardado })
+        if (!errorPerfil) perfil = { nombre: nombreGuardado }
+      }
 
       elSaludo.textContent = `Hola, ${perfil?.nombre ?? session.user.email}`
       elSesionActiva.classList.remove('hidden')
@@ -94,7 +104,13 @@
         return
       }
 
-      const { data, error } = await supabase.auth.signUp({ email: correo, password })
+      // El nombre viaja en los metadatos del usuario; el perfil se crea en
+      // mostrarSesion() cuando ya hay sesion (RLS no deja insertarlo antes).
+      const { data, error } = await supabase.auth.signUp({
+        email: correo,
+        password,
+        options: { data: { nombre }, emailRedirectTo: window.location.href },
+      })
       if (error) {
         elError.textContent = error.message.includes('already registered')
           ? 'Ese correo ya está registrado.'
@@ -102,15 +118,10 @@
         return
       }
 
-      const usuario = data.user
-      if (usuario) {
-        const { error: errorPerfil } = await supabase
-          .from('perfiles')
-          .insert({ id: usuario.id, nombre })
-        if (errorPerfil) {
-          elError.textContent = 'Cuenta creada, pero no se pudo guardar el nombre: ' + errorPerfil.message
-          return
-        }
+      if (!data.session) {
+        elError.style.color = '#1a7f37'
+        elError.textContent = 'Te enviamos un correo para confirmar tu cuenta. Ábrelo y vuelve a entrar.'
+        return
       }
       mostrarSesion(data.session)
     })
