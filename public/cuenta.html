@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>First Take</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 420px; margin: 60px auto; padding: 0 20px; color: #1a1a1a; }
+  h1 { font-size: 1.4rem; }
+  form { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+  input { padding: 10px; font-size: 1rem; border: 1px solid #ccc; border-radius: 6px; }
+  button { padding: 10px; font-size: 1rem; border: none; border-radius: 6px; background: #111; color: #fff; cursor: pointer; }
+  button:disabled { opacity: 0.5; cursor: default; }
+  .error { color: #c0392b; font-size: 0.9rem; min-height: 1.2em; }
+  .hidden { display: none; }
+  #saludo { font-size: 1.2rem; margin-bottom: 16px; }
+</style>
+</head>
+<body>
+  <p><a href="index.html">← Volver a First Take</a></p>
+  <h1>First Take</h1>
+
+  <div id="sesion-activa" class="hidden">
+    <p id="saludo"></p>
+    <button id="btn-logout">Cerrar sesión</button>
+  </div>
+
+  <div id="formularios">
+    <section>
+      <h2>Crear cuenta</h2>
+      <form id="form-signup">
+        <input type="text" id="signup-nombre" placeholder="Tu nombre" required />
+        <input type="email" id="signup-correo" placeholder="Correo" required />
+        <input type="password" id="signup-password" placeholder="Contraseña (mínimo 6 caracteres)" required />
+        <button type="submit">Registrarme</button>
+        <p class="error" id="signup-error"></p>
+      </form>
+    </section>
+
+    <section>
+      <h2>Iniciar sesión</h2>
+      <form id="form-login">
+        <input type="email" id="login-correo" placeholder="Correo" required />
+        <input type="password" id="login-password" placeholder="Contraseña" required />
+        <button type="submit">Entrar</button>
+        <p class="error" id="login-error"></p>
+      </form>
+    </section>
+  </div>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.4/+esm'
+
+    const SUPABASE_URL = "https://eqjsiiaugaqnjgawzygv.supabase.co"
+    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_m6YzZuxm9ZHu-3Db8h_j_A_WCOnDEvi"
+
+    const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY)
+
+    const elSesionActiva = document.getElementById('sesion-activa')
+    const elFormularios = document.getElementById('formularios')
+    const elSaludo = document.getElementById('saludo')
+
+    async function mostrarSesion(session) {
+      if (!session) {
+        elSesionActiva.classList.add('hidden')
+        elFormularios.classList.remove('hidden')
+        return
+      }
+      const { data: perfil, error } = await supabase
+        .from('perfiles')
+        .select('nombre')
+        .eq('id', session.user.id)
+        .single()
+
+      elSaludo.textContent = `Hola, ${perfil?.nombre ?? session.user.email}`
+      elSesionActiva.classList.remove('hidden')
+      elFormularios.classList.add('hidden')
+    }
+
+    // Al cargar / recargar la página: si ya había sesión, se mantiene.
+    supabase.auth.getSession().then(({ data: { session } }) => mostrarSesion(session))
+    supabase.auth.onAuthStateChange((_event, session) => mostrarSesion(session))
+
+    document.getElementById('form-signup').addEventListener('submit', async (e) => {
+      e.preventDefault()
+      const nombre = document.getElementById('signup-nombre').value.trim()
+      const correo = document.getElementById('signup-correo').value.trim()
+      const password = document.getElementById('signup-password').value
+      const elError = document.getElementById('signup-error')
+      elError.textContent = ''
+
+      if (password.length < 6) {
+        elError.textContent = 'La contraseña debe tener al menos 6 caracteres.'
+        return
+      }
+
+      const { data, error } = await supabase.auth.signUp({ email: correo, password })
+      if (error) {
+        elError.textContent = error.message.includes('already registered')
+          ? 'Ese correo ya está registrado.'
+          : error.message
+        return
+      }
+
+      const usuario = data.user
+      if (usuario) {
+        const { error: errorPerfil } = await supabase
+          .from('perfiles')
+          .insert({ id: usuario.id, nombre })
+        if (errorPerfil) {
+          elError.textContent = 'Cuenta creada, pero no se pudo guardar el nombre: ' + errorPerfil.message
+          return
+        }
+      }
+      mostrarSesion(data.session)
+    })
+
+    document.getElementById('form-login').addEventListener('submit', async (e) => {
+      e.preventDefault()
+      const correo = document.getElementById('login-correo').value.trim()
+      const password = document.getElementById('login-password').value
+      const elError = document.getElementById('login-error')
+      elError.textContent = ''
+
+      const { data, error } = await supabase.auth.signInWithPassword({ email: correo, password })
+      if (error) {
+        elError.textContent = 'Correo o contraseña incorrectos.'
+        return
+      }
+      mostrarSesion(data.session)
+    })
+
+    document.getElementById('btn-logout').addEventListener('click', async () => {
+      await supabase.auth.signOut()
+      mostrarSesion(null)
+    })
+  </script>
+</body>
+</html>
