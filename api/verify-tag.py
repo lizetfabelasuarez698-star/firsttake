@@ -18,7 +18,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."
 
 from verificacion.canjes import AlmacenMemoria, AlmacenSupabase, AlmacenUpstash  # noqa: E402
 from verificacion.instagram import ClienteGraph  # noqa: E402
-from verificacion.webhook import procesar_aviso  # noqa: E402
+from verificacion.webhook import firma_valida, procesar_aviso  # noqa: E402
 
 _RUTA_CREADORES = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "datos", "creadores.json")
 _almacen_local = AlmacenMemoria()
@@ -58,6 +58,13 @@ class handler(BaseHTTPRequestHandler):
     def do_POST(self):
         largo = int(self.headers.get("Content-Length") or 0)
         cuerpo = self.rfile.read(largo)
+        # La firma se revisa ANTES de tocar Instagram o la base: un aviso falso
+        # (o sin firma) se rechaza con 401 y no gasta llamadas ni truena la funcion.
+        secreto = os.environ.get("META_APP_SECRET", "")
+        if not firma_valida(cuerpo, self.headers.get("X-Hub-Signature-256"), secreto):
+            return self._responder(401, {"error": "firma_invalida"})
+        if not (os.environ.get("INSTAGRAM_ACCESS_TOKEN") and os.environ.get("INSTAGRAM_BUSINESS_ID")):
+            return self._responder(503, {"error": "falta_configurar_instagram"})
         graph = ClienteGraph(
             os.environ.get("INSTAGRAM_ACCESS_TOKEN", ""),
             os.environ.get("INSTAGRAM_BUSINESS_ID", ""),
@@ -66,7 +73,7 @@ class handler(BaseHTTPRequestHandler):
         codigo, respuesta = procesar_aviso(
             cuerpo,
             self.headers.get("X-Hub-Signature-256"),
-            os.environ.get("META_APP_SECRET", ""),
+            secreto,
             os.environ.get("INSTAGRAM_HANDLE", ""),
             _creadores(),
             graph,
